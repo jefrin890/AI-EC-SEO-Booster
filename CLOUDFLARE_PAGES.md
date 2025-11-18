@@ -1,8 +1,23 @@
 # Cloudflare Pages 部署配置
 
-## 構建設置
+## ⚠️ 重要：必須設置構建命令
 
-在 Cloudflare Pages 的構建設置中，請確保以下配置：
+從部署日誌可以看到 `No build command specified. Skipping build step.`，這表示 Cloudflare Pages **沒有執行構建**，因此部署的是源文件而不是構建後的文件。
+
+## 構建設置步驟
+
+**必須在 Cloudflare Dashboard 中手動設置：**
+
+1. 登入 Cloudflare Dashboard
+2. 進入您的 Pages 專案
+3. 點擊 **Settings** → **Builds & deployments**
+4. 在 **Build configuration** 中設置：
+   - **Build command**: `npm run build`
+   - **Build output directory**: `dist`
+   - **Root directory**: (留空或設置為 `/`)
+   - **Node.js version**: 18 或更高
+
+## 構建設置詳情
 
 - **構建命令**: `npm run build`
 - **構建輸出目錄**: `dist`
