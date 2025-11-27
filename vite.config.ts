@@ -4,7 +4,11 @@ import react from '@vitejs/plugin-react';
 
 export default defineConfig(({ mode }) => {
     const env = loadEnv(mode, '.', '');
+    // 如果是 GitHub Pages 部署，需要設定 base path
+    const base = process.env.GITHUB_PAGES === 'true' ? '/AI-EC-SEO-Booster/' : '/';
+    
     return {
+      base,
       server: {
         port: 3000,
         host: '0.0.0.0',

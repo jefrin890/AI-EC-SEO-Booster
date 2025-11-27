@@ -321,6 +321,8 @@ jobs:
       - name: Install dependencies
         run: npm install
       - name: Build
+        env:
+          GITHUB_PAGES: 'true'
         run: npm run build
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
@@ -370,13 +372,20 @@ export default defineConfig({
 
 #### 步驟 2: 設定建置配置
 
+**⚠️ 重要：** 請確認建置命令設定正確！
+
 在 Cloudflare Pages 設定中配置：
 
 - **Project name**: `AI-EC-SEO-Booster`（或自訂名稱）
 - **Production branch**: `main`
-- **Build command**: `npm run build`
+- **Build command**: `npm run build` ⚠️ **請確認是 `build` 而不是 `dev`**
 - **Build output directory**: `dist`
 - **Root directory**: `/`（預設）
+- **Node.js version**: 20（建議）
+
+**常見錯誤：**
+- ❌ 錯誤：`npm run dev`（這會啟動開發伺服器，導致部署卡住）
+- ✅ 正確：`npm run build`（這會建置生產版本）
 
 #### 步驟 3: 環境變數（可選）
 
