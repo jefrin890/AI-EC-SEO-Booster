@@ -42,3 +42,11 @@ functions/node_modules/
 # Temporary files
 index.js
 vite.config.simple.ts
+
+# Documentation and discussion files (keep locally, exclude from git)
+PROJECT_SUMMARY.md
+INTEGRATION_PROMPT.md
+OPTIMIZATION_REPORT.md
+GIT_REPO_MIGRATION_GUIDE.md
+GITHUB_TOPICS.md
+DEPLOYMENT_FIX.md
