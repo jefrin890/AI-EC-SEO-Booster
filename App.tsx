@@ -26,7 +26,7 @@ const ArrowDownTrayIcon: React.FC<{ className?: string }> = ({ className }) => (
 
 const Header: React.FC = () => (
     <header className="w-full text-center py-6 border-b border-slate-700">
-        <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-600">FlyPig AI 電商增長神器 v2.0</h1>
+        <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-600">AI 電商SEO加速器 v1.0</h1>
         <p className="text-text-secondary mt-2">從市場洞察到前導頁生成，一站式 AI 解決方案。</p>
     </header>
 );
@@ -554,7 +554,7 @@ const InfoModal: React.FC<{ title: string; children: React.ReactNode; onClose: (
 
 const FeatureIntroductionContent: React.FC = () => (
     <>
-        <p className="mb-6">「FlyPig AI 電商增長神器」是一個從市場策略、內容規劃到技術實現的全流程加速器，旨在為您的電商事業節省大量時間與人力成本，實現更快速、更智慧的業務增長。</p>
+        <p className="mb-6">「AI 電商SEO加速器」是一個從市場策略、內容規劃到技術實現的全流程加速器，旨在為您的電商事業節省大量時間與人力成本，實現更快速、更智慧的業務增長。</p>
         <div className="space-y-6">
             <div>
                 <h3 className="text-lg font-semibold text-brand-light mb-2">🚀 全方位市場深度透視</h3>
@@ -804,7 +804,7 @@ Now, generate ONLY the complete JavaScript code for the React application to be 
                         onClick={() => setIsApiKeyModalOpen(true)}
                         className="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-300 ease-in-out text-sm border border-purple-500"
                     >
-                        API Key 設定
+                        更換 API Key
                     </button>
                     <button 
                         onClick={() => setIsIntroModalOpen(true)}
@@ -835,7 +835,7 @@ Now, generate ONLY the complete JavaScript code for the React application to be 
                 <PromptModal prompt={promptModalContent} title={promptModalTitle} onClose={() => setPromptModalContent(null)} />
             )}
             {isIntroModalOpen && (
-                 <InfoModal title="🚀 FlyPig AI 電商增長神器：功能簡介" onClose={() => setIsIntroModalOpen(false)}>
+                 <InfoModal title="🚀 AI 電商SEO加速器：功能簡介" onClose={() => setIsIntroModalOpen(false)}>
                     <FeatureIntroductionContent />
                  </InfoModal>
             )}

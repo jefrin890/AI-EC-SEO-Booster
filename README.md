@@ -250,78 +250,158 @@ AI-EC-SEO-Booster/
 
 ---
 
-## 🚢 部署說明
+## 🚢 部署指南
 
-### Cloudflare Pages 部署
+### 本地部署
 
-本專案已配置 Cloudflare Pages 部署設定：
+#### 前置需求
 
-1. **連接 GitHub Repository**
-   - 在 Cloudflare Dashboard 中選擇 Pages
-   - 連接 `AI-EC-SEO-Booster` repository
+- Node.js 18+ 
+- npm 或 yarn
 
-2. **設定建置配置**
-   - **Build command**: `npm run build`
-   - **Build output directory**: `dist`
-   - **Node.js version**: 18 或更高
+#### 部署步驟
 
-3. **環境變數**（可選）
-   - 如需使用環境變數，可在 Cloudflare Pages 設定中配置
-   - 本專案使用 Context API 管理，無需環境變數
+1. **複製專案**
+   ```bash
+   git clone https://github.com/mkhsu2002/AI-EC-SEO-Booster.git
+   cd AI-EC-SEO-Booster
+   ```
 
-詳細部署說明請參考 `CLOUDFLARE_PAGES.md`。
-
-### 其他部署平台
-
-本專案可部署至任何支援靜態網站的平台：
-
-- **Vercel**: 自動偵測 Vite 專案
-- **Netlify**: 設定建置命令為 `npm run build`
-- **GitHub Pages**: 使用 GitHub Actions 自動部署
-
----
-
-## 👨‍💻 開發指南
-
-### 開發環境設定
-
-1. **安裝依賴**
+2. **安裝依賴**
    ```bash
    npm install
    ```
 
-2. **啟動開發伺服器**
+3. **建置專案**
    ```bash
-   npm run dev
+   npm run build
    ```
 
-3. **型別檢查**
+4. **預覽建置結果**
    ```bash
-   npx tsc --noEmit
+   npm run preview
    ```
 
-### 程式碼規範
+5. **部署到本地伺服器**
+   - 建置產出位於 `dist/` 目錄
+   - 可使用任何靜態檔案伺服器部署
+   - 例如：使用 `npx serve dist` 或 `python -m http.server` 在 dist 目錄
 
-- 使用 TypeScript 確保型別安全
-- 遵循 React Hooks 最佳實踐
-- 元件採用函數式元件寫法
-- 使用 Tailwind CSS 進行樣式設計
+---
 
-### 主要檔案說明
+### GitHub Pages 部署
 
-- **`App.tsx`**: 主應用元件，包含所有業務邏輯與狀態管理
-- **`services/geminiService.ts`**: Gemini API 服務層，處理所有 AI 分析請求
-- **`contexts/ApiKeyContext.tsx`**: API Key 狀態管理 Context
-- **`types.ts`**: 所有 TypeScript 型別定義
+#### 步驟 1: 設定 GitHub Actions
 
-### 新增功能
+1. 在專案根目錄建立 `.github/workflows/` 資料夾
+2. 建立 `deploy.yml` 檔案，內容如下：
 
-如需新增功能，建議遵循以下結構：
+```yaml
+name: Deploy to GitHub Pages
 
-1. 在 `types.ts` 中定義相關型別
-2. 在 `services/` 中新增服務函數
-3. 在 `App.tsx` 中整合新功能
-4. 更新相關 UI 元件
+on:
+  push:
+    branches: [ main ]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install dependencies
+        run: npm install
+      - name: Build
+        run: npm run build
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./dist
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+```
+
+#### 步驟 2: 開啟 GitHub Pages
+
+1. 進入 GitHub 儲存庫的 **Settings** > **Pages**
+2. 在 **Build and deployment** > **Source** 中選擇 **GitHub Actions**
+3. 推送程式碼後，GitHub Actions 會自動建置並部署
+4. 部署完成後，網站會顯示在 `https://<username>.github.io/AI-EC-SEO-Booster/`
+
+#### 步驟 3: 設定 Base Path（如需要）
+
+如果部署在子路徑下，需要在 `vite.config.ts` 中設定：
+
+```typescript
+export default defineConfig({
+  base: '/AI-EC-SEO-Booster/', // 替換為您的儲存庫名稱
+  // ... 其他設定
+})
+```
+
+---
+
+### Cloudflare Pages 部署
+
+#### 步驟 1: 連接 GitHub Repository
+
+1. 登入 [Cloudflare Dashboard](https://dash.cloudflare.com/)
+2. 前往 **Workers & Pages** > **Create application** > **Pages** > **Connect to Git**
+3. 選擇您的 GitHub 帳號並授權
+4. 選擇 `AI-EC-SEO-Booster` 儲存庫
+
+#### 步驟 2: 設定建置配置
+
+在 Cloudflare Pages 設定中配置：
+
+- **Project name**: `AI-EC-SEO-Booster`（或自訂名稱）
+- **Production branch**: `main`
+- **Build command**: `npm run build`
+- **Build output directory**: `dist`
+- **Root directory**: `/`（預設）
+
+#### 步驟 3: 環境變數（可選）
+
+本專案使用 Context API 管理 API Key，無需設定環境變數。如需設定其他環境變數：
+
+1. 進入專案設定 > **Environment variables**
+2. 新增所需的環境變數
+3. 例如：`NODE_VERSION: 20`
+
+#### 步驟 4: 部署
+
+1. 點擊 **Save and Deploy**
+2. Cloudflare 會自動開始建置和部署
+3. 部署完成後，您會獲得一個 `*.pages.dev` 的網址
+4. 可在 **Custom domains** 中設定自訂網域
+
+#### 步驟 5: 自動部署
+
+之後每次推送到 `main` 分支，Cloudflare Pages 會自動重新建置和部署。
+
+#### 注意事項
+
+- 確保 `wrangler.toml` 配置正確（如使用 Cloudflare Workers）
+- 檢查 `public/_headers` 和 `public/_redirects` 檔案是否正確複製到 `dist/`
+- 詳細說明請參考 `CLOUDFLARE_PAGES.md`
 
 ---
 
@@ -424,17 +504,6 @@ A: 是的，本應用程式需要網路連線以呼叫 Google Gemini API。
 
 ---
 
-## 🤝 貢獻指南
-
-歡迎提交 Issue 或 Pull Request！
-
-1. Fork 本專案
-2. 建立功能分支 (`git checkout -b feature/AmazingFeature`)
-3. 提交變更 (`git commit -m 'Add some AmazingFeature'`)
-4. 推送到分支 (`git push origin feature/AmazingFeature`)
-5. 開啟 Pull Request
-
----
 
 ## 📄 授權資訊
 
@@ -462,9 +531,7 @@ A: 是的，本應用程式需要網路連線以呼叫 Google Gemini API。
 
 ## 💬 技術支援與討論
 
-如有任何問題、建議或需要技術支援，歡迎加入 FlyPig 專屬 LINE 群組：
-
-👉 **加入 FlyPig LINE 群組** [https://line.me/R/ti/g/@icareuec](https://line.me/R/ti/g/@icareuec)
+如有任何問題、建議或需要技術支援，歡迎[加入 FlyPig 專屬 LINE 群組](https://line.me/R/ti/g/@icareuec)。
 
 我們會在這裡提供：
 
@@ -486,11 +553,7 @@ A: 是的，本應用程式需要網路連線以呼叫 Google Gemini API。
 
 ## ☕ 請我喝杯咖啡
 
-如果這個專案對您有幫助，歡迎請我喝杯咖啡：
-
-👉 **Buy me a coffee** [https://buymeacoffee.com/mkhsu2002w](https://buymeacoffee.com/mkhsu2002w)
-
-您的支持是我持續開發的動力！
+如果這個專案對您有幫助，歡迎[請我喝杯咖啡](https://buymeacoffee.com/mkhsu2002w)，您的支持是我持續開發的動力！
 
 ---
 
