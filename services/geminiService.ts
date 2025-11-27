@@ -1,13 +1,19 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import type { ProductInfo, AnalysisResult, ContentStrategy } from '../types';
 
-const API_KEY = process.env.API_KEY;
+// API Key 將從 Context 傳入
+let apiKeyInstance: string | null = null;
 
-if (!API_KEY) {
-  throw new Error("API_KEY environment variable not set");
-}
+export const setGeminiApiKey = (key: string) => {
+  apiKeyInstance = key;
+};
 
-const ai = new GoogleGenAI({ apiKey: API_KEY });
+const getAI = () => {
+  if (!apiKeyInstance) {
+    throw new Error("Gemini API Key 尚未設定。請先設定您的 API Key。");
+  }
+  return new GoogleGenAI({ apiKey: apiKeyInstance });
+};
 
 const analysisSchema = {
   type: Type.OBJECT,
@@ -127,6 +133,7 @@ export const analyzeMarket = async (productInfo: ProductInfo): Promise<AnalysisR
           data: productInfo.image.base64,
         },
       };
+      const ai = getAI();
       const result = await ai.models.generateContent({
         model: 'gemini-2.5-flash',
         contents: { parts: [imagePart, { text: "Describe the key visual features of the product in this image for a marketing analysis. Respond in Traditional Chinese." }] },
@@ -162,6 +169,7 @@ export const analyzeMarket = async (productInfo: ProductInfo): Promise<AnalysisR
   `;
 
   try {
+    const ai = getAI();
     const result = await ai.models.generateContent({
       model: "gemini-2.5-flash",
       contents: prompt,
@@ -207,6 +215,7 @@ export const generateContentStrategy = async (analysisResult: AnalysisResult): P
     `;
 
     try {
+        const ai = getAI();
         const result = await ai.models.generateContent({
             model: "gemini-2.5-flash",
             contents: prompt,
