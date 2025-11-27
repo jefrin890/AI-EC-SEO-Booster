@@ -1,111 +1,474 @@
-# FlyPig AI 電商增長神器 v2.0
+# AI EC SEO Booster v1.0
 
-![App Screenshot 1](https://i.imgur.com/A5bE2fQ.png)
+**AI 智能電商SEO加速器**
 
-
-
-**FlyPig AI 電商增長神器** 是一個由 AI 驅動的專家級應用程式，旨在為電商產品提供深入的市場分析、內容策略規劃，並能一鍵生成適用於各種 AI 工具的專業提示詞 (Prompt)，以快速產出高品質的前導頁。它將專業的市場分析師、SEO 專家與內容策略師的工作流程自動化，幫助使用者快速掌握市場動態，制定致勝策略。
+一個由 AI 驅動的智能電商市場分析與 SEO 內容策略生成工具，透過 Google Gemini API 提供專業的市場洞察、競爭分析、買家人物誌描繪，並自動生成 SEO 優化的內容策略與前導頁提示詞。
 
 ---
 
-## ✨ 核心功能
+## 📋 目錄
 
-本應用程式採用三階段的漸進式工作流程，引導使用者從宏觀市場分析到具體的內容產出。
-
-### **第一階段：深度市場分析 (Market Analysis)**
-
-只需輸入產品名稱、描述、目標市場，並可選上傳一張圖片，AI 將會生成一份全面的市場分析報告，內容包含：
-
-*   **產品核心價值 (Product Core Value):** 提煉產品的主要特色、核心優勢，以及解決了使用者哪些關鍵痛點。
-*   **目標市場定位 (Market Positioning):** 深入分析目標市場的文化洞察、消費習慣、語言特性及網路搜尋趨勢。
-*   **競爭對手分析 (Competitor Analysis):** 自動識別 3 個主要競爭對手，並分析其行銷策略、優勢與劣勢。
-*   **潛在客戶描繪 (Buyer Personas):** 創建 3 個詳細的潛在客戶畫像，包含其基本資料、興趣、痛點，以及他們可能會使用的搜尋關鍵字。
-
-### **第二階段：內容與互動策略 (Content & SEO Strategy)**
-
-基於第一階段的分析報告，AI 將自動生成一份專業的內容與 SEO 策略，包含：
-
-*   **三大內容主題 (Content Topics):** 建議 3 個能吸引目標客群的非銷售性質內容主題。
-*   **專業 SEO 指導 (SEO Guidance):** 針對每個主題，提供精準的 SEO 建議，包括關鍵字密度、語意關鍵字與連結策略。
-*   **互動元素建議 (Interactive Elements):** 提出可增加使用者參與度的互動元素點子，如小測驗、計算機等。
-*   **行動呼籲文案 (CTA Suggestions):** 提供多個自然且具說服力的 CTA (Call-to-Action) 文案範例。
-
-### **第三階段：生成專業前導頁與提示詞 (Landing Page Generation & Prompts)**
-
-使用者可以從第二階段建議的三個主題中，選擇任一主題，應用程式將提供以下選項：
-
-*   **呼叫 Gamma API:** 直接呼叫 Gamma API，自動生成一個結構完整、內容豐富的專業文件，適合作為網頁前導頁的內容基礎。
-*   **生成 AI Studio 提示詞 (Generate AI Studio Prompt):** **[新功能]** 一鍵生成為 Google AI Studio 或其他 AI 程式碼助理量身打造的詳細提示詞。開發者可以直接使用此提示詞，快速生成一個包含 React 和 Tailwind CSS 的完整 landing page 程式碼。
-*   **生成 Gamma 提示詞 (Generate Gamma Prompt):** 生成適用於 Gamma 平台的提示詞，方便使用者手動在 Gamma 中創建專業簡報或文件。
-
-
-### **其他功能**
-
-*   **下載報告:** 所有市場分析報告和內容策略皆可一鍵下載為 Markdown (`.md`) 檔案，方便歸檔與分享。
-*   **多主題生成:** 使用者可以為所有建議的內容主題生成提示詞。
+- [功能特色](#功能特色)
+- [核心工作流程](#核心工作流程)
+- [技術架構](#技術架構)
+- [快速開始](#快速開始)
+- [使用指南](#使用指南)
+- [專案結構](#專案結構)
+- [API 設定](#api-設定)
+- [部署說明](#部署說明)
+- [開發指南](#開發指南)
+- [授權資訊](#授權資訊)
 
 ---
 
-## 🔖 版本紀錄 (Changelog)
+## ✨ 功能特色
 
-### **v2.0**
-*   **重大功能：整合 Gamma API 自動化文件生成** - 現在可以直接呼叫 Gamma API，將分析與策略一鍵轉化為圖文並茂的專業文件或前導頁草稿，實現從策略到內容的全自動化流程。
-*   **UI/UX 優化：** 針對文件生成流程，新增了生成狀態顯示、成功後的文件查看連結，以及對應的按鈕互動，提升使用者體驗。
-*   **版本升級：** 應用程式版本號正式更新至 v2.0。
+### 🎯 三階段智能分析流程
 
-### **v1.9**
-*   **品牌重塑:** 應用程式正式更名為「FlyPig AI 電商增長神器」，以更精準地反映其核心價值。
-*   **新增功能簡介:** 在首頁右上角新增「功能簡介」按鈕，點擊後會彈出詳細的功能說明與使用指南，幫助新使用者快速上手。
-*   **版本標記:** 在應用程式主畫面上明確標示版本號 v1.9。
+**第一階段：深度市場分析**
+- 📊 **產品核心價值提煉**：自動分析產品特色、核心優勢與解決的痛點
+- 🌍 **目標市場定位**：深入剖析文化洞察、消費習慣、語言特性與搜尋趨勢
+- 🏢 **競爭對手分析**：智能識別 3 個主要競爭對手，分析行銷策略與優劣勢
+- 👥 **買家人物誌描繪**：建立 3 個詳細的潛在客戶畫像，包含興趣、痛點與搜尋關鍵字
 
----
+**第二階段：內容與 SEO 策略**
+- 📝 **內容主題建議**：生成 3 個吸引目標客群的非銷售性質內容主題
+- 🔍 **專業 SEO 指導**：針對每個主題提供關鍵字密度、語意關鍵字與連結策略
+- 🎨 **互動元素建議**：提出可增加使用者參與度的互動元素點子
+- 📢 **行動呼籲文案**：提供多個自然且具說服力的 CTA 文案範例
 
-## 🚀 如何使用 (How to Use)
+**第三階段：AI Studio 提示詞生成**
+- 🤖 **一鍵生成提示詞**：為 Google AI Studio 生成詳細的 React + Tailwind CSS 前導頁提示詞
+- 💻 **完整程式碼規格**：包含頁面結構、設計規範、SEO 要求與內容指引
 
-1.  **輸入產品資訊:** 在首頁表單中，填寫您的產品名稱、詳細描述和目標市場。為了讓 AI 有更豐富的分析素材，建議上傳一張清晰的產品圖片。
-2.  **生成市場分析:** 點擊「生成市場分析報告」按鈕。AI 會在約 30-60 秒內完成分析並呈現結果。您可以點擊「下載報告」保存這份分析。
-3.  **生成內容策略:** 在分析報告下方，點擊「第二步：生成內容策略」按鈕。AI 會基於先前的分析結果，規劃出詳細的內容與 SEO 策略。同樣地，此策略也可下載保存。
-4.  **生成前導頁與提示詞:**
-    *   從三個建議的內容主題卡片中，選擇一個您喜歡的。
-    *   **自動生成文件:** 點擊「呼叫 Gamma API 生成文件」，AI 將在背景自動為您創建一份專業文件。完成後，會提供連結供您查看。
-    *   **生成提示詞:** 若您想手動操作，可以點擊「生成 AI Studio 提示詞」或「生成 Gamma 提示詞」。一個包含完整提示詞的視窗將會彈出，您可以直接複製並貼到對應的 AI 工具中使用。
-5.  **重新開始:** 完成所有流程後，可以點擊底部的「開始新分析」按鈕，為下一個產品進行規劃。
+### 🔐 安全與便利性
 
----
-
-## 🛠️ 技術棧 (Tech Stack)
-
-*   **前端框架:** [React](https://react.dev/)
-*   **CSS 框架:** [Tailwind CSS](https://tailwindcss.com/)
-*   **AI 模型:** [Google Gemini API](https://ai.google.dev/)
-*   **文件生成:** [Gamma API](https://gamma.app/docs/api)
-*   **語言:** TypeScript
+- ✅ **API Key 本地管理**：使用 React Context API 管理，儲存在瀏覽器 localStorage
+- 🔒 **安全性保證**：API Key 僅儲存在本地，不會上傳至伺服器
+- 📥 **報告下載**：支援一鍵下載市場分析與內容策略報告（Markdown 格式）
+- 🖼️ **圖片分析**：支援產品圖片上傳，使用 Gemini Vision API 進行視覺分析
 
 ---
 
-## ⚙️ 本地運行 (Local Setup)
+## 🔄 核心工作流程
 
-若要在您自己的電腦上運行此專案，請遵循以下步驟：
+```
+輸入產品資訊
+    ↓
+[第一階段] 市場分析
+    ├─ 產品核心價值分析
+    ├─ 目標市場定位
+    ├─ 競爭對手分析
+    └─ 買家人物誌描繪
+    ↓
+[第二階段] 內容策略生成
+    ├─ 內容主題建議（3個）
+    ├─ SEO 指導方針
+    ├─ 互動元素建議
+    └─ CTA 文案建議
+    ↓
+[第三階段] 提示詞生成
+    └─ AI Studio 前導頁提示詞
+    ↓
+下載報告 / 複製提示詞
+```
 
-1.  **複製專案:**
-    ```bash
-    git clone https://github.com/your-username/flypig-ai-pro.git
-    cd flypig-ai-pro
-    ```
-2.  **安裝依賴:**
-    由於此專案使用 CDN 引入 React，因此無需 `npm install`。所有依賴項已在 `index.html` 中配置。
+---
 
-3.  **設定 API 金鑰:**
-    此專案需要 Google Gemini API 金鑰以及 Gamma API 金鑰才能運作。您需要將您的金鑰設定為環境變數。
+## 🛠️ 技術架構
 
-    *   `API_KEY`: 您的 Google Gemini API 金鑰。
-    *   `GAMMA_API_KEY`: 您的 Gamma API 金鑰。
-    *   **重要提示:** 前端程式碼中的 `process.env.API_KEY` 和 `process.env.GAMMA_API_KEY` 是佔位符。在實際部署或本地開發時，您需要透過伺服器或構建工具（如 Vite, Webpack）的環境變數功能來注入此金鑰，以避免將其直接暴露在客戶端程式碼中。
+### 前端技術棧
 
-4.  **啟動開發伺服器:**
-    您可以使用任何支援靜態檔案的伺服器來運行此專案。一個簡單的方式是使用 VS Code 的 [Live Server](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer) 擴充功能。
+| 技術 | 版本 | 用途 |
+|------|------|------|
+| **React** | ^19.1.1 | UI 框架 |
+| **TypeScript** | ~5.8.2 | 型別安全 |
+| **Tailwind CSS** | CDN | 樣式框架 |
+| **Vite** | ^6.2.0 | 建置工具 |
+| **@google/genai** | ^1.19.0 | Gemini API 客戶端 |
 
-    *   在 VS Code 中打開專案資料夾。
-    *   右鍵點擊 `index.html` 檔案，選擇 `Open with Live Server`。
+### 核心架構設計
 
-應用程式將在您的瀏覽器中打開，您現在可以開始使用了。
+```
+src/
+├── contexts/
+│   └── ApiKeyContext.tsx      # API Key 狀態管理
+├── components/
+│   └── ApiKeyModal.tsx        # API Key 設定彈窗
+├── services/
+│   └── geminiService.ts       # Gemini API 服務層
+├── types.ts                   # TypeScript 型別定義
+├── App.tsx                    # 主應用元件
+└── index.tsx                  # 應用入口
+```
+
+### 設計模式
+
+- **Context API**：全域狀態管理（API Key）
+- **服務層模式**：API 呼叫封裝
+- **元件化設計**：可重用的 UI 元件
+- **型別安全**：完整的 TypeScript 型別定義
+
+---
+
+## 🚀 快速開始
+
+### 前置需求
+
+- Node.js 18+ 
+- npm 或 yarn
+- Google Gemini API Key（[免費申請](https://aistudio.google.com/app/apikey)）
+
+### 安裝步驟
+
+1. **複製專案**
+   ```bash
+   git clone https://github.com/mkhsu2002/AI-EC-SEO-Booster.git
+   cd AI-EC-SEO-Booster
+   ```
+
+2. **安裝依賴**
+   ```bash
+   npm install
+   ```
+
+3. **啟動開發伺服器**
+   ```bash
+   npm run dev
+   ```
+
+4. **開啟瀏覽器**
+   - 訪問 `http://localhost:3000`
+   - 首次使用會提示設定 Gemini API Key
+   - 輸入您的 API Key 即可開始使用
+
+### 建置生產版本
+
+```bash
+npm run build
+```
+
+建置產出位於 `dist/` 目錄。
+
+---
+
+## 📖 使用指南
+
+### 第一步：設定 API Key
+
+1. 點擊右上角「API Key 設定」按鈕
+2. 輸入您的 Google Gemini API Key
+3. API Key 會自動儲存在瀏覽器中
+4. 點擊「開始使用」完成設定
+
+> 💡 **提示**：如果還沒有 API Key，可以點擊「還沒有 Key? 點此免費獲取」連結前往申請。
+
+### 第二步：輸入產品資訊
+
+在表單中填寫以下資訊：
+
+- **產品名稱**（必填）：例如「人體工學辦公椅」
+- **產品描述**（必填）：詳細的產品資訊、規格與主要賣點
+- **目標市場**（必填）：例如「台灣」、「美國加州」或「日本東京」
+- **產品連結網址**（選填）：產品頁面 URL
+- **產品圖片**（選填）：上傳產品圖片，支援拖曳上傳
+
+### 第三步：生成市場分析
+
+1. 點擊「生成市場分析報告」按鈕
+2. 等待 AI 分析（約 30-60 秒）
+3. 查看完整的市場分析報告
+4. 可點擊「下載報告」保存為 Markdown 檔案
+
+### 第四步：生成內容策略
+
+1. 在分析報告下方點擊「第二步：生成內容策略」
+2. 等待策略生成（約 20-40 秒）
+3. 查看內容主題、SEO 指導與互動元素建議
+4. 可點擊「下載策略」保存報告
+
+### 第五步：生成前導頁提示詞
+
+1. 從三個內容主題中選擇一個
+2. 點擊「生成 AI Studio 提示詞」
+3. 在彈窗中查看完整的提示詞
+4. 點擊「複製提示詞」複製到剪貼簿
+5. 將提示詞貼到 Google AI Studio 或其他 AI 程式碼助理中使用
+
+---
+
+## 📁 專案結構
+
+```
+AI-EC-SEO-Booster/
+├── src/
+│   ├── contexts/
+│   │   └── ApiKeyContext.tsx          # API Key Context 管理
+│   ├── components/
+│   │   └── ApiKeyModal.tsx            # API Key 設定 Modal
+│   ├── services/
+│   │   ├── geminiService.ts           # Gemini API 服務
+│   │   └── gammaService.ts            # Gamma API 服務（已移除）
+│   ├── types.ts                       # TypeScript 型別定義
+│   ├── App.tsx                        # 主應用元件
+│   └── index.tsx                      # 應用入口
+├── public/
+│   ├── _headers                       # Cloudflare Pages headers
+│   └── _redirects                     # SPA 路由重定向
+├── dist/                              # 建置輸出目錄
+├── index.html                         # HTML 入口檔案
+├── vite.config.ts                     # Vite 配置
+├── tsconfig.json                      # TypeScript 配置
+├── package.json                       # 專案依賴
+└── README.md                          # 本文件
+```
+
+---
+
+## 🔑 API 設定
+
+### Google Gemini API
+
+本專案使用 Google Gemini API 進行 AI 分析。API Key 管理方式：
+
+- **儲存位置**：瀏覽器 localStorage
+- **安全性**：API Key 僅儲存在本地，不會上傳至任何伺服器
+- **設定方式**：透過 UI 介面設定，首次使用會自動提示
+
+### 取得 API Key
+
+1. 前往 [Google AI Studio](https://aistudio.google.com/app/apikey)
+2. 登入您的 Google 帳號
+3. 點擊「Create API Key」
+4. 複製生成的 API Key
+5. 在應用程式中貼上並儲存
+
+### API 使用限制
+
+- 免費方案有使用限制，請參考 [Google Gemini API 定價](https://ai.google.dev/pricing)
+- 建議監控 API 使用量以避免超額費用
+
+---
+
+## 🚢 部署說明
+
+### Cloudflare Pages 部署
+
+本專案已配置 Cloudflare Pages 部署設定：
+
+1. **連接 GitHub Repository**
+   - 在 Cloudflare Dashboard 中選擇 Pages
+   - 連接 `AI-EC-SEO-Booster` repository
+
+2. **設定建置配置**
+   - **Build command**: `npm run build`
+   - **Build output directory**: `dist`
+   - **Node.js version**: 18 或更高
+
+3. **環境變數**（可選）
+   - 如需使用環境變數，可在 Cloudflare Pages 設定中配置
+   - 本專案使用 Context API 管理，無需環境變數
+
+詳細部署說明請參考 `CLOUDFLARE_PAGES.md`。
+
+### 其他部署平台
+
+本專案可部署至任何支援靜態網站的平台：
+
+- **Vercel**: 自動偵測 Vite 專案
+- **Netlify**: 設定建置命令為 `npm run build`
+- **GitHub Pages**: 使用 GitHub Actions 自動部署
+
+---
+
+## 👨‍💻 開發指南
+
+### 開發環境設定
+
+1. **安裝依賴**
+   ```bash
+   npm install
+   ```
+
+2. **啟動開發伺服器**
+   ```bash
+   npm run dev
+   ```
+
+3. **型別檢查**
+   ```bash
+   npx tsc --noEmit
+   ```
+
+### 程式碼規範
+
+- 使用 TypeScript 確保型別安全
+- 遵循 React Hooks 最佳實踐
+- 元件採用函數式元件寫法
+- 使用 Tailwind CSS 進行樣式設計
+
+### 主要檔案說明
+
+- **`App.tsx`**: 主應用元件，包含所有業務邏輯與狀態管理
+- **`services/geminiService.ts`**: Gemini API 服務層，處理所有 AI 分析請求
+- **`contexts/ApiKeyContext.tsx`**: API Key 狀態管理 Context
+- **`types.ts`**: 所有 TypeScript 型別定義
+
+### 新增功能
+
+如需新增功能，建議遵循以下結構：
+
+1. 在 `types.ts` 中定義相關型別
+2. 在 `services/` 中新增服務函數
+3. 在 `App.tsx` 中整合新功能
+4. 更新相關 UI 元件
+
+---
+
+## 📊 功能詳細說明
+
+### 市場分析功能
+
+**產品核心價值分析**
+- 自動提取產品的主要特色
+- 識別核心競爭優勢
+- 分析產品解決的用戶痛點
+
+**目標市場定位**
+- 文化洞察分析
+- 消費習慣研究
+- 語言特性識別
+- 搜尋趨勢分析
+
+**競爭對手分析**
+- 自動識別主要競爭對手（3個）
+- 分析行銷策略
+- 評估優勢與劣勢
+
+**買家人物誌**
+- 建立 3 個詳細的買家畫像
+- 包含基本資料、興趣、痛點
+- 提供搜尋關鍵字建議
+
+### 內容策略功能
+
+**內容主題生成**
+- 3 個非銷售性質內容主題
+- 每個主題包含標題、描述
+- 主要關鍵字與長尾關鍵字
+- 完整的 SEO 指導方針
+
+**SEO 指導**
+- 關鍵字密度建議
+- 語意關鍵字列表
+- 內部連結策略
+- 外部連結策略
+
+**互動元素建議**
+- 2-3 個互動元素點子
+- 詳細的實作描述
+
+**CTA 文案**
+- 3 個自然且具說服力的行動呼籲文案
+
+### AI Studio 提示詞生成
+
+生成的提示詞包含：
+
+- **產品資訊**：名稱、描述、目標市場
+- **目標受眾**：買家人物誌詳細資訊
+- **關鍵訊息**：產品特色、優勢、痛點解決方案
+- **SEO 要求**：關鍵字、長尾關鍵字、語意關鍵字
+- **頁面結構**：Header、Hero、痛點、解決方案、見證、CTA
+- **設計規範**：色彩、字體、動畫效果
+- **技術規格**：React、Tailwind CSS、響應式設計
+
+---
+
+## 🐛 常見問題
+
+### Q: API Key 安全嗎？
+
+A: 是的，API Key 僅儲存在您的瀏覽器 localStorage 中，不會上傳至任何伺服器。您可以隨時清除或更換 API Key。
+
+### Q: 支援哪些圖片格式？
+
+A: 支援常見的圖片格式：PNG、JPG、JPEG、GIF、WebP。
+
+### Q: 分析報告可以匯出嗎？
+
+A: 可以，市場分析報告和內容策略都可以下載為 Markdown 格式檔案。
+
+### Q: 生成的提示詞可以在哪些平台使用？
+
+A: 生成的 AI Studio 提示詞適用於 Google AI Studio、Claude、ChatGPT 等支援程式碼生成的 AI 工具。
+
+### Q: 需要網路連線嗎？
+
+A: 是的，本應用程式需要網路連線以呼叫 Google Gemini API。
+
+---
+
+## 📝 更新日誌
+
+### v1.0.0 (2025-01)
+
+- ✨ 初始版本發布
+- 🎯 三階段智能分析流程
+- 🔐 API Key Context 管理機制
+- 📊 完整的市場分析功能
+- 📝 內容策略生成功能
+- 🤖 AI Studio 提示詞生成
+- 📥 Markdown 報告下載功能
+- 🖼️ 產品圖片分析支援
+
+---
+
+## 🤝 貢獻指南
+
+歡迎提交 Issue 或 Pull Request！
+
+1. Fork 本專案
+2. 建立功能分支 (`git checkout -b feature/AmazingFeature`)
+3. 提交變更 (`git commit -m 'Add some AmazingFeature'`)
+4. 推送到分支 (`git push origin feature/AmazingFeature`)
+5. 開啟 Pull Request
+
+---
+
+## 📄 授權資訊
+
+本專案採用 MIT 授權條款。
+
+---
+
+## 🔗 相關連結
+
+- [Google Gemini API 文件](https://ai.google.dev/docs)
+- [React 官方文件](https://react.dev/)
+- [Tailwind CSS 文件](https://tailwindcss.com/docs)
+- [Vite 文件](https://vitejs.dev/)
+
+---
+
+## 👏 致謝
+
+- [Google Gemini](https://ai.google.dev/) - 提供強大的 AI 分析能力
+- [React](https://react.dev/) - 優秀的 UI 框架
+- [Tailwind CSS](https://tailwindcss.com/) - 實用的 CSS 框架
+- [Vite](https://vitejs.dev/) - 快速的建置工具
+
+---
+
+**Open sourced by [FlyPig AI](https://flypigai.icareu.tw/)**
+
+---
+
+<div align="center">
+
+**⭐ 如果這個專案對您有幫助，請給我們一個 Star！**
+
+Made with ❤️ by FlyPig AI
+
+</div>
+
