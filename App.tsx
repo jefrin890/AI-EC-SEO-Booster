@@ -575,11 +575,10 @@ const FeatureIntroductionContent: React.FC = () => (
                 </ul>
             </div>
             <div>
-                <h3 className="text-lg font-semibold text-brand-light mb-2">💻 一鍵生成行銷素材與程式碼</h3>
+                <h3 className="text-lg font-semibold text-brand-light mb-2">💻 一鍵生成前導頁程式碼</h3>
                  <ul className="list-disc list-inside space-y-1 pl-2">
-                     <li>**Gamma API 自動化文件生成：** 直接串接 Gamma API，全自動生成圖文並茂的專業文件。</li>
                      <li>**AI Studio 前導頁程式碼生成：** 一鍵生成專業提示詞，讓 AI 程式碼助理（如 Google AI Studio）在幾秒內產出高品質的 React 前導頁程式碼。</li>
-                     <li>**專業簡報/文件提示詞生成：** 為 Gamma 等 AI 簡報工具生成專用提示詞，快速創建專業簡報。</li>
+                     <li>**完整 SEO 優化：** 生成的程式碼已整合 SEO 關鍵字與最佳實踐，確保前導頁具備良好的搜尋引擎排名潛力。</li>
                  </ul>
             </div>
         </div>
@@ -587,7 +586,7 @@ const FeatureIntroductionContent: React.FC = () => (
          <ol className="list-decimal list-inside space-y-2 pl-2">
              <li>**第一步：輸入產品資訊** - 填寫產品資料並點擊「生成市場分析報告」。</li>
              <li>**第二步：生成內容策略** - 報告產出後，點擊「生成內容策略」按鈕，AI 將規劃出詳細的內容與 SEO 策略。</li>
-             <li>**第三步：生成前導頁與提示詞** - 從建議的內容主題中，點擊「呼叫 Gamma API 生成文件」即可全自動生成，或點擊「生成 AI Studio/Gamma 提示詞」來手動操作。</li>
+             <li>**第三步：生成前導頁提示詞** - 從建議的內容主題中，點擊「生成 AI Studio 提示詞」按鈕，複製提示詞後貼到 Google AI Studio 或其他 AI 程式碼助理工具中，即可快速產出高品質的 React 前導頁程式碼。</li>
          </ol>
     </>
 );
