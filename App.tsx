@@ -1,8 +1,7 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { analyzeMarket, generateContentStrategy, setGeminiApiKey } from './services/geminiService';
-import { useApiKey } from './contexts/ApiKeyContext';
-import ApiKeyModal from './components/ApiKeyModal';
-import type { AnalysisResult, BuyerPersona, Competitor, ProductInfo, ContentStrategy, ContentTopic, InteractiveElement } from './types';
+import { analyzeMarket, generateContentStrategy } from './services/geminiService';
+import { startGammaGeneration, checkGammaGenerationStatus } from './services/gammaService';
+import type { AnalysisResult, BuyerPersona, Competitor, ProductInfo, ContentStrategy, ContentTopic, InteractiveElement, GammaGenerationResult } from './types';
 
 // --- Helper Functions ---
 const fileToBase64 = (file: File): Promise<string> =>
@@ -15,19 +14,21 @@ const fileToBase64 = (file: File): Promise<string> =>
 
 // --- SVG Icon Components ---
 const ChartBarIcon: React.FC<{ className?: string }> = ({ className }) => ( <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={className}><path strokeLinecap="round" strokeLinejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z" /></svg>);
+const DocumentTextIcon: React.FC<{ className?: string }> = ({ className }) => ( <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={className}><path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" /></svg>);
 const UserGroupIcon: React.FC<{ className?: string }> = ({ className }) => ( <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={className}><path strokeLinecap="round" strokeLinejoin="round" d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m-7.5-2.962c.57-1.023.994-2.131 1.253-3.284A3 3 0 0 0 11.25 9.75v-1.5a3 3 0 0 0-3.75-2.632m3.75 0-1.007-1.007a3 3 0 0 0-4.243 0M3.75 19.125A9.094 9.094 0 0 1 7.5 18a9.094 9.094 0 0 1 3.75 1.125m-3.75 0a3 3 0 0 0-3.75 2.632A3 3 0 0 0 7.5 19.125m6-6.375a3 3 0 0 0-3-3m3 3a3 3 0 0 0 3 3m-3-3V1.5m-3 5.25v1.5a3 3 0 0 0 3 3m3-3a3 3 0 0 0-3-3" /></svg>);
 const LightBulbIcon: React.FC<{ className?: string }> = ({ className }) => ( <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={className}><path strokeLinecap="round" strokeLinejoin="round" d="M12 18v-5.25m0 0a6.01 6.01 0 0 0 1.5-.189m-1.5.189a6.01 6.01 0 0 1-1.5-.189m3.75 7.478a12.06 12.06 0 0 1-4.5 0m3.75 2.311a6.01 6.01 0 0 0 4.5 0m-8.625-1.401a6.01 6.01 0 0 1 4.5 0m-4.5 0a3.75 3.75 0 0 0-3.75 3.75H3a3.75 3.75 0 0 0 3.75-3.75m6.75-3a3.75 3.75 0 0 0 3.75-3.75V3a3.75 3.75 0 0 0-3.75-3.75S9 3 9 3v6.75a3.75 3.75 0 0 0 3.75 3.75Z" /></svg>);
 const SparklesIcon: React.FC<{ className?: string }> = ({ className }) => ( <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={className}><path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456Z" /></svg>);
 const ArrowPathIcon: React.FC<{ className?: string }> = ({ className }) => ( <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={className}><path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 11.667 0l3.181-3.183m-3.181-4.991-3.181-3.183a8.25 8.25 0 0 0-11.667 0L2.985 14.651" /></svg>);
 const ArrowDownTrayIcon: React.FC<{ className?: string }> = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={className}><path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg>);
-const DocumentTextIcon: React.FC<{ className?: string }> = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={className}><path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" /></svg>);
+const EyeIcon: React.FC<{ className?: string }> = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={className}><path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" /><path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" /></svg>);
+const CodeBracketIcon: React.FC<{ className?: string }> = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={className}><path strokeLinecap="round" strokeLinejoin="round" d="M17.25 6.75 22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3-4.5 15" /></svg>);
 
 
 // --- UI Components ---
 
 const Header: React.FC = () => (
     <header className="w-full text-center py-6 border-b border-slate-700">
-        <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-600">AI 電商SEO加速器 v1.0</h1>
+        <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-600">FlyPig AI 電商增長神器 v2.0</h1>
         <p className="text-text-secondary mt-2">從市場洞察到前導頁生成，一站式 AI 解決方案。</p>
     </header>
 );
@@ -310,10 +311,14 @@ interface ContentStrategyDisplayProps {
   strategy: ContentStrategy;
   productInfo: ProductInfo | null;
   analysisResult: AnalysisResult | null;
+  onGenerateDocument: (topic: ContentTopic) => void;
+  onGenerateGammaPrompt: (topic: ContentTopic) => void;
   onGenerateAIStudioPrompt: (topic: ContentTopic) => void;
+  generatingTopic: string | null;
+  generatedDocuments: Record<string, GammaGenerationResult>;
 }
 
-const ContentStrategyDisplay: React.FC<ContentStrategyDisplayProps> = ({ strategy, productInfo, analysisResult, onGenerateAIStudioPrompt }) => {
+const ContentStrategyDisplay: React.FC<ContentStrategyDisplayProps> = ({ strategy, productInfo, analysisResult, onGenerateDocument, onGenerateGammaPrompt, onGenerateAIStudioPrompt, generatingTopic, generatedDocuments }) => {
     
     const handleDownload = () => {
         if (!productInfo) return;
@@ -378,8 +383,8 @@ const ContentStrategyDisplay: React.FC<ContentStrategyDisplayProps> = ({ strateg
         >
             <div className="space-y-8">
                  <div className="bg-slate-800 p-4 rounded-lg border border-slate-700">
-                    <h4 className="text-xl font-bold text-brand-light mb-3">第三步：生成前導頁提示詞</h4>
-                    <p className="text-text-secondary mb-4 text-sm">選擇下方一個主題，生成適用於 AI Studio 的提示詞，快速產出高品質的 React 前導頁程式碼。</p>
+                    <h4 className="text-xl font-bold text-brand-light mb-3">第三步：生成前導頁與提示詞</h4>
+                    <p className="text-text-secondary mb-4 text-sm">選擇下方一個主題，使用 Gamma API 自動生成文件，或生成適用於其他平台的提示詞。</p>
                 </div>
 
                 <div>
@@ -388,7 +393,11 @@ const ContentStrategyDisplay: React.FC<ContentStrategyDisplayProps> = ({ strateg
                             <ContentTopicCard 
                                 key={i} 
                                 topic={topic}
+                                onGenerate={() => onGenerateDocument(topic)}
+                                onGenerateGammaPrompt={() => onGenerateGammaPrompt(topic)}
                                 onGenerateAIStudioPrompt={() => onGenerateAIStudioPrompt(topic)}
+                                isGenerating={generatingTopic === topic.topic}
+                                generatedDocument={generatedDocuments[topic.topic]}
                             />
                         )}
                     </div>
@@ -418,10 +427,16 @@ const ContentStrategyDisplay: React.FC<ContentStrategyDisplayProps> = ({ strateg
 
 interface ContentTopicCardProps {
     topic: ContentTopic;
+    onGenerate: () => void;
+    onGenerateGammaPrompt: () => void;
     onGenerateAIStudioPrompt: () => void;
+    isGenerating: boolean;
+    generatedDocument: GammaGenerationResult | undefined;
 }
 
-const ContentTopicCard: React.FC<ContentTopicCardProps> = ({ topic, onGenerateAIStudioPrompt }) => {
+const ContentTopicCard: React.FC<ContentTopicCardProps> = ({ topic, onGenerate, onGenerateGammaPrompt, onGenerateAIStudioPrompt, isGenerating, generatedDocument }) => {
+    const isGenerated = generatedDocument && generatedDocument.status === 'completed';
+
     return (
     <div className="bg-slate-800 p-4 rounded-lg border border-slate-700 space-y-3 flex flex-col justify-between">
         <div>
@@ -440,6 +455,26 @@ const ContentTopicCard: React.FC<ContentTopicCardProps> = ({ topic, onGenerateAI
             </div>
         </div>
         <div className="mt-4 space-y-2">
+            <button
+                disabled={isGenerating || isGenerated}
+                onClick={onGenerate}
+                className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-md disabled:bg-slate-700 disabled:cursor-not-allowed flex items-center justify-center text-sm transition"
+            >
+                <DocumentTextIcon className="w-4 h-4 mr-2" />
+                {isGenerating ? '生成中...' : (isGenerated ? '已生成' : '呼叫 Gamma API 生成文件')}
+            </button>
+            {isGenerated && (
+                <a href={generatedDocument.gammaUrl} target="_blank" rel="noopener noreferrer" className="text-sm text-green-400 hover:text-green-300 inline-flex items-center justify-center w-full py-1 bg-green-900/20 rounded-md hover:bg-green-900/40 transition">
+                    <EyeIcon className="w-4 h-4 mr-1" /> 查看已生成的文件
+                </a>
+            )}
+            <button 
+                onClick={onGenerateGammaPrompt} 
+                className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-4 rounded-md transition duration-300 ease-in-out flex items-center justify-center text-sm"
+            >
+                <CodeBracketIcon className="w-4 h-4 mr-2" />
+                生成 Gamma.app 提示詞
+            </button>
              <button 
                 onClick={onGenerateAIStudioPrompt} 
                 className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-md transition duration-300 ease-in-out flex items-center justify-center text-sm"
@@ -555,7 +590,7 @@ const InfoModal: React.FC<{ title: string; children: React.ReactNode; onClose: (
 
 const FeatureIntroductionContent: React.FC = () => (
     <>
-        <p className="mb-6">「AI 電商SEO加速器」是一個從市場策略、內容規劃到技術實現的全流程加速器，旨在為您的電商事業節省大量時間與人力成本，實現更快速、更智慧的業務增長。</p>
+        <p className="mb-6">「FlyPig AI 電商增長神器」是一個從市場策略、內容規劃到技術實現的全流程加速器，旨在為您的電商事業節省大量時間與人力成本，實現更快速、更智慧的業務增長。</p>
         <div className="space-y-6">
             <div>
                 <h3 className="text-lg font-semibold text-brand-light mb-2">🚀 全方位市場深度透視</h3>
@@ -575,10 +610,11 @@ const FeatureIntroductionContent: React.FC = () => (
                 </ul>
             </div>
             <div>
-                <h3 className="text-lg font-semibold text-brand-light mb-2">💻 一鍵生成前導頁程式碼</h3>
+                <h3 className="text-lg font-semibold text-brand-light mb-2">💻 一鍵生成行銷素材與程式碼</h3>
                  <ul className="list-disc list-inside space-y-1 pl-2">
+                     <li>**Gamma API 自動化文件生成：** 直接串接 Gamma API，全自動生成圖文並茂的專業文件。</li>
                      <li>**AI Studio 前導頁程式碼生成：** 一鍵生成專業提示詞，讓 AI 程式碼助理（如 Google AI Studio）在幾秒內產出高品質的 React 前導頁程式碼。</li>
-                     <li>**完整 SEO 優化：** 生成的程式碼已整合 SEO 關鍵字與最佳實踐，確保前導頁具備良好的搜尋引擎排名潛力。</li>
+                     <li>**專業簡報/文件提示詞生成：** 為 Gamma 等 AI 簡報工具生成專用提示詞，快速創建專業簡報。</li>
                  </ul>
             </div>
         </div>
@@ -586,7 +622,7 @@ const FeatureIntroductionContent: React.FC = () => (
          <ol className="list-decimal list-inside space-y-2 pl-2">
              <li>**第一步：輸入產品資訊** - 填寫產品資料並點擊「生成市場分析報告」。</li>
              <li>**第二步：生成內容策略** - 報告產出後，點擊「生成內容策略」按鈕，AI 將規劃出詳細的內容與 SEO 策略。</li>
-             <li>**第三步：生成前導頁提示詞** - 從建議的內容主題中，點擊「生成 AI Studio 提示詞」按鈕，複製提示詞後貼到 Google AI Studio 或其他 AI 程式碼助理工具中，即可快速產出高品質的 React 前導頁程式碼。</li>
+             <li>**第三步：生成前導頁與提示詞** - 從建議的內容主題中，點擊「呼叫 Gamma API 生成文件」即可全自動生成，或點擊「生成 AI Studio/Gamma 提示詞」來手動操作。</li>
          </ol>
     </>
 );
@@ -595,7 +631,6 @@ const FeatureIntroductionContent: React.FC = () => (
 // --- Main App Component ---
 
 function App() {
-    const { apiKey, isApiKeySet } = useApiKey();
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null);
@@ -606,37 +641,25 @@ function App() {
     const [strategyError, setStrategyError] = useState<string | null>(null);
     const [contentStrategy, setContentStrategy] = useState<ContentStrategy | null>(null);
     
+    const [generatingTopic, setGeneratingTopic] = useState<string | null>(null);
+    const [gammaError, setGammaError] = useState<string | null>(null);
+    const [generatedDocuments, setGeneratedDocuments] = useState<Record<string, GammaGenerationResult>>({});
+    const [gammaStatusMessage, setGammaStatusMessage] = useState<string | null>(null);
+    
     const [promptModalContent, setPromptModalContent] = useState<string | null>(null);
     const [promptModalTitle, setPromptModalTitle] = useState('');
     
     const [isIntroModalOpen, setIsIntroModalOpen] = useState(false);
-    const [isApiKeyModalOpen, setIsApiKeyModalOpen] = useState(false);
 
-    // 當 API Key 變更時，更新 geminiService
-    useEffect(() => {
-        if (apiKey) {
-            setGeminiApiKey(apiKey);
-        }
-    }, [apiKey]);
 
-    // 檢查是否需要顯示 API Key 設定視窗
-    useEffect(() => {
-        if (!isApiKeySet) {
-            setIsApiKeyModalOpen(true);
-        }
-    }, [isApiKeySet]);
+    const pollingRefs = React.useRef<Record<string, boolean>>({});
 
     const handleAnalyze = useCallback(async (productInfo: ProductInfo) => {
-        if (!isApiKeySet || !apiKey) {
-            setIsApiKeyModalOpen(true);
-            return;
-        }
         setProductInfo(productInfo);
         setIsLoading(true);
         setError(null);
         setAnalysisResult(null);
         try {
-            setGeminiApiKey(apiKey);
             const result = await analyzeMarket(productInfo);
             setAnalysisResult(result);
         } catch (err) {
@@ -645,19 +668,14 @@ function App() {
         } finally {
             setIsLoading(false);
         }
-    }, [apiKey, isApiKeySet]);
+    }, []);
     
     const handleGenerateStrategy = useCallback(async () => {
         if (!analysisResult) return;
-        if (!isApiKeySet || !apiKey) {
-            setIsApiKeyModalOpen(true);
-            return;
-        }
         setIsGeneratingStrategy(true);
         setStrategyError(null);
         setContentStrategy(null);
         try {
-            setGeminiApiKey(apiKey);
             const result = await generateContentStrategy(analysisResult);
             setContentStrategy(result);
         } catch (err) {
@@ -666,8 +684,71 @@ function App() {
         } finally {
             setIsGeneratingStrategy(false);
         }
-    }, [analysisResult, apiKey, isApiKeySet]);
+    }, [analysisResult]);
 
+    const handleGenerateGammaPrompt = useCallback((topic: ContentTopic) => {
+        if (!productInfo || !analysisResult || !contentStrategy) return;
+
+        const personaDetails = analysisResult.buyerPersonas.map(p => 
+            `- **${p.personaName} (${p.demographics}):**\n   - **興趣:** ${p.interests.join(', ')}\n   - **痛點:** ${p.painPoints.join(', ')}\n   - **搜尋關鍵字:** ${p.keywords.join(', ')}`
+        ).join('\n\n');
+
+        const prompt = `**任務目標：** 根據以下詳細的市場分析，為產品「${productInfo.name}」創建一篇具吸引力、SEO 優化的專業前導頁文章。
+
+---
+
+**1. 文章主標題 (請直接使用)：**
+"${topic.topic}"
+
+---
+
+**2. 核心推廣產品資訊：**
+*   **產品名稱：** ${productInfo.name}
+*   **產品描述：** ${productInfo.description}
+*   **產品參考連結 (用於連結與內容參考)：** ${productInfo.url || '無'}
+
+---
+
+**3. 目標受眾深度剖析 (請以此為基礎進行撰寫)：**
+您正在為以下這些人物撰寫，請直接解決他們的需求與痛點：
+${personaDetails}
+
+---
+
+**4. 關鍵訊息與價值主張 (文章必須強調)：**
+*   **主要特色：** ${analysisResult.productCoreValue.mainFeatures.join('; ')}
+*   **核心優勢 (獨特賣點)：** ${analysisResult.productCoreValue.coreAdvantages.join('; ')}
+*   **解決的痛點：** ${analysisResult.productCoreValue.painPointsSolved.join('; ')}
+
+---
+
+**5. 內容與 SEO 要求：**
+*   **主要關鍵字 (Focus Keyword)：** \`${topic.focusKeyword}\` (請確保在標題、副標題和內文中自然地出現)
+*   **長尾關鍵字 (Long-tail Keywords)：** 請在文章中自然地融入以下詞組：${topic.longTailKeywords.join(', ')}
+*   **語意關鍵字 (Semantic Keywords)：** 為了建立主題權威，請使用相關概念詞：${topic.seoGuidance.semanticKeywords.join(', ')}
+*   **建議文章結構：**
+    1.  **開頭：** 使用一個引人入勝的引言，提及目標受眾的一個共同痛點，引起共鳴。
+    2.  **發展：** 詳細闡述該問題，讓讀者感覺「你懂我」。
+    3.  **解決方案：** 順勢引出「${productInfo.name}」作為理想的解決方案。自然地介紹其特色與優勢如何解決前述痛點。
+    4.  **差異化：** (如果適用) 可以簡短提及與市場上其他方案（例如 ${analysisResult.competitorAnalysis.length > 0 ? analysisResult.competitorAnalysis[0].brandName : '傳統方法'}）的不同之處，突顯我們的獨特性。
+    5.  **結尾：** 用一個強而有力的總結收尾，並搭配明確的行動呼籲 (CTA)。
+*   **寫作語氣：** 針對 **${productInfo.market}** 市場，語氣應專業、具說服力，並對用戶的問題表示同理心。參考語言特性：${analysisResult.marketPositioning.languageNuances}。
+
+---
+
+**6. 行動呼籲 (Call to Action - CTA)：**
+請在文章結尾處，自然地整合以下至少一個 CTA 文案：
+${contentStrategy.ctaSuggestions.map(cta => `- "${cta}"`).join('\n')}
+
+---
+
+**7. 視覺要求：**
+請選擇與產品、目標市場和受眾形象相關的高品質、專業庫存圖片。例如，展示符合人物誌形象的人們從產品中受益的場景。
+`.trim();
+        setPromptModalTitle('Gamma.app 網頁生成提示詞');
+        setPromptModalContent(prompt);
+
+    }, [productInfo, analysisResult, contentStrategy]);
 
     const handleGenerateAIStudioPrompt = useCallback((topic: ContentTopic) => {
         if (!productInfo || !analysisResult || !contentStrategy) return;
@@ -750,6 +831,61 @@ Now, generate ONLY the complete JavaScript code for the React application to be 
     }, [productInfo, analysisResult, contentStrategy]);
 
 
+    const handleGenerateDocument = useCallback(async (topic: ContentTopic) => {
+        if (!productInfo || !analysisResult) return;
+        
+        const topicTitle = topic.topic;
+        setGeneratingTopic(topicTitle);
+        setGammaError(null);
+        setGammaStatusMessage('正在向 Gamma 提交請求...');
+
+        try {
+            const { id } = await startGammaGeneration(productInfo, analysisResult, topic);
+            pollingRefs.current[topicTitle] = true;
+            
+            const poll = async (retries = 24) => { // Poll for 2 minutes max (24 * 5s)
+                if (!pollingRefs.current[topicTitle]) return; // Stop if cancelled
+                if (retries <= 0) {
+                    setGammaError('Gamma 文件生成超時。');
+                    setGeneratingTopic(null);
+                    setGammaStatusMessage(null);
+                    delete pollingRefs.current[topicTitle];
+                    return;
+                }
+
+                try {
+                    const result = await checkGammaGenerationStatus(id);
+                    setGammaStatusMessage(`生成狀態：${result.status}...`);
+
+                    if (result.status === 'completed') {
+                        setGeneratedDocuments(prev => ({...prev, [topicTitle]: result}));
+                        setGeneratingTopic(null);
+                        setGammaStatusMessage(null);
+                        delete pollingRefs.current[topicTitle];
+                    } else if (result.status === 'failed') {
+                        setGammaError('Gamma 文件生成失敗。');
+                        setGeneratingTopic(null);
+                        setGammaStatusMessage(null);
+                        delete pollingRefs.current[topicTitle];
+                    } else {
+                        setTimeout(() => poll(retries - 1), 5000); // Poll every 5 seconds
+                    }
+                } catch(err) {
+                     setGammaError(err instanceof Error ? err.message : '輪詢 Gamma 狀態時發生錯誤。');
+                     setGeneratingTopic(null);
+                     setGammaStatusMessage(null);
+                     delete pollingRefs.current[topicTitle];
+                }
+            };
+
+            poll();
+
+        } catch (err) {
+            setGammaError(err instanceof Error ? err.message : '啟動 Gamma 文件生成時發生錯誤。');
+            setGeneratingTopic(null);
+            setGammaStatusMessage(null);
+        }
+    }, [productInfo, analysisResult]);
 
 
     const handleStartOver = () => {
@@ -760,7 +896,12 @@ Now, generate ONLY the complete JavaScript code for the React application to be 
         setIsGeneratingStrategy(false);
         setStrategyError(null);
         setContentStrategy(null);
+        setGeneratingTopic(null);
+        setGammaError(null);
+        setGeneratedDocuments({});
+        setGammaStatusMessage(null);
         setPromptModalContent(null);
+        pollingRefs.current = {};
         setFormKey(prevKey => prevKey + 1);
     };
     
@@ -789,30 +930,29 @@ Now, generate ONLY the complete JavaScript code for the React application to be 
                         strategy={contentStrategy} 
                         productInfo={productInfo}
                         analysisResult={analysisResult}
+                        onGenerateDocument={handleGenerateDocument} 
+                        onGenerateGammaPrompt={handleGenerateGammaPrompt}
                         onGenerateAIStudioPrompt={handleGenerateAIStudioPrompt}
+                        generatingTopic={generatingTopic}
+                        generatedDocuments={generatedDocuments}
                     />
                 )}
+                
+                {generatingTopic && <Loader title="正在生成 Gamma 前導頁..." message={gammaStatusMessage || "請稍候..."} icon={<DocumentTextIcon className="w-16 h-16 mx-auto"/>} />}
+                {gammaError && <ErrorDisplay title="前導頁生成失敗" message={gammaError} />}
             </>
         )
     };
 
     return (
-        <div className="min-h-screen bg-background font-sans flex flex-col">
-            <main className="container mx-auto px-4 pb-12 relative flex-grow">
-                <div className="absolute top-6 right-4 sm:right-6 md:right-8 flex gap-2 z-10">
-                    <button 
-                        onClick={() => setIsApiKeyModalOpen(true)}
-                        className="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-300 ease-in-out text-sm border border-purple-500"
-                    >
-                        更換 API Key
-                    </button>
-                    <button 
-                        onClick={() => setIsIntroModalOpen(true)}
-                        className="bg-slate-800 hover:bg-slate-700 text-text-secondary font-semibold py-2 px-4 rounded-lg transition duration-300 ease-in-out text-sm border border-slate-600"
-                    >
-                        功能簡介
-                    </button>
-                </div>
+        <div className="min-h-screen bg-background font-sans">
+            <main className="container mx-auto px-4 pb-12 relative">
+                <button 
+                    onClick={() => setIsIntroModalOpen(true)}
+                    className="absolute top-6 right-4 sm:right-6 md:right-8 bg-slate-800 hover:bg-slate-700 text-text-secondary font-semibold py-2 px-4 rounded-lg transition duration-300 ease-in-out text-sm z-10 border border-slate-600"
+                >
+                    功能簡介
+                </button>
                 <Header />
                 <div className="mt-8">
                     {!analysisResult && !isLoading && !error && (
@@ -835,28 +975,10 @@ Now, generate ONLY the complete JavaScript code for the React application to be 
                 <PromptModal prompt={promptModalContent} title={promptModalTitle} onClose={() => setPromptModalContent(null)} />
             )}
             {isIntroModalOpen && (
-                 <InfoModal title="🚀 AI 電商SEO加速器：功能簡介" onClose={() => setIsIntroModalOpen(false)}>
+                 <InfoModal title="🚀 FlyPig AI 電商增長神器：功能簡介" onClose={() => setIsIntroModalOpen(false)}>
                     <FeatureIntroductionContent />
                  </InfoModal>
             )}
-            {isApiKeyModalOpen && (
-                <ApiKeyModal isOpen={isApiKeyModalOpen} onClose={() => setIsApiKeyModalOpen(false)} />
-            )}
-            <footer className="w-full py-6 border-t border-slate-700 mt-auto">
-                <div className="container mx-auto px-4 text-center">
-                    <p className="text-text-secondary text-sm">
-                        Open sourced by{' '}
-                        <a
-                            href="https://flypigai.icareu.tw/"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-brand-secondary hover:text-brand-light underline transition"
-                        >
-                            FlyPig AI
-                        </a>
-                    </p>
-                </div>
-            </footer>
         </div>
     );
 }
