@@ -1,9 +1,10 @@
 name = "ai-ec-seo-booster"
 compatibility_date = "2024-01-01"
 
+# Cloudflare Pages 會參考這個輸出目錄設定（BETA）
+pages_build_output_dir = "dist"
+
 [build]
 command = "npm run build"
 cwd = "."
-
-
 
