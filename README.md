@@ -135,5 +135,7 @@ Email: flypig@icareu.tw / LINE ID: icareuec
 
 Open sourced by [FlyPig AI](https://flypigai.icareu.tw/)
 
-詳見授權全文：LICENSE
+詳見授權全文：
+- [MIT License (English)](LICENSE)
+- [MIT 授權條款 (繁體中文)](LICENSE.zh-TW.md)
 
