@@ -751,9 +751,19 @@ describe('analyzeMarket', () => {
      - ✅ 業務邏輯已抽象到可重用的 Hooks
      - ✅ 建置測試通過，無錯誤
 
-5. **新增表單驗證** - 使用 react-hook-form + zod
+5. ✅ **新增表單驗證** - 使用 react-hook-form + zod
    - 影響：使用者體驗、資料完整性
    - 預估時間：1 天
+   - **狀態：已完成** (2024-12-03)
+   - **完成內容：**
+     - ✅ 安裝 react-hook-form、zod 和 @hookform/resolvers
+     - ✅ 建立 `schemas/productInfoSchema.ts` 定義表單驗證規則
+     - ✅ 建立 `utils/fileValidation.ts` 檔案驗證工具
+     - ✅ 重構 `InputForm.tsx` 使用 react-hook-form 和 zod
+     - ✅ 實作即時表單驗證和錯誤訊息顯示
+     - ✅ 實作圖片檔案驗證（格式、大小限制）
+     - ✅ 改善使用者體驗，提供清晰的錯誤提示
+     - ✅ 建置測試通過，無錯誤
 
 6. **優化圖片處理邏輯** - 新增檔案驗證
    - 影響：安全性、使用者體驗
