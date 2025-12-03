@@ -1,6 +1,15 @@
-# 電商SEO加速器 v1.2
+# 電商SEO加速器 v1.4
 
 AI 驅動的智能電商市場分析與 SEO 內容策略生成工具，透過 Google Gemini API 提供專業的市場洞察、競爭分析、買家人物誌描繪，並自動生成 SEO 優化的內容策略與前導頁提示詞。
+
+## 🎉 v1.4 更新亮點
+
+- ✨ **全面重構**：App.tsx 從 1,429 行精簡到 217 行（減少 85%），大幅提升程式碼可維護性
+- 🧩 **模組化架構**：元件、Hooks、工具函數已拆分到獨立檔案，便於重用和測試
+- 🛡️ **統一錯誤處理**：實作完整的錯誤處理機制，提供友善的錯誤訊息
+- ✅ **表單驗證**：使用 react-hook-form + zod 實作即時表單驗證和檔案驗證
+- 🧪 **單元測試**：新增 21 個測試案例，確保程式碼品質
+- 🎣 **自訂 Hooks**：抽象業務邏輯到可重用的 Hooks（useProductAnalysis, useContentStrategy, useScreenshot）
 
 ## ✨ 主要功能
 
@@ -26,7 +35,9 @@ AI 驅動的智能電商市場分析與 SEO 內容策略生成工具，透過 Go
 - **前端框架**: React 19 + TypeScript
 - **CSS 框架**: Tailwind CSS
 - **AI 服務**: Google Gemini API (@google/genai)
-- **狀態管理**: React Context API
+- **狀態管理**: React Context API + 自訂 Hooks
+- **表單驗證**: react-hook-form + zod
+- **測試框架**: Vitest
 - **建置工具**: Vite
 - **部署平台**: GitHub Pages / Cloudflare Pages
 
@@ -79,11 +90,14 @@ npm run dev
 
 ### GitHub Pages 部署
 
-本專案已配置 GitHub Actions 自動部署，每次推送到 `main` 分支會自動部署到 GitHub Pages。
+本專案已配置 GitHub Actions 自動部署，每次推送到 `dev/v1.2` 分支會自動部署到 GitHub Pages。
 
 1. 進入 GitHub 儲存庫的 **Settings** > **Pages**
 2. 在 **Build and deployment** > **Source** 選項中，選擇 **GitHub Actions**
-3. 推送程式碼更新，等待 Actions 跑完，您的網站就會正常顯示
+3. 確保 GitHub Pages 環境設定正確（參考 `DEPLOYMENT.md`）
+4. 推送程式碼更新到 `dev/v1.2` 分支，等待 Actions 跑完，您的網站就會正常顯示
+
+> 📖 詳細部署說明請參考 [DEPLOYMENT.md](./DEPLOYMENT.md)
 
 ### Cloudflare Pages 部署
 
