@@ -9,7 +9,10 @@ interface InfoModalProps {
 export const InfoModal: React.FC<InfoModalProps> = ({ title, children, onClose }) => {
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
+      // 確保事件物件存在且有效
+      if (event && event.key === 'Escape') {
+        event.preventDefault();
+        event.stopPropagation();
         onClose();
       }
     };

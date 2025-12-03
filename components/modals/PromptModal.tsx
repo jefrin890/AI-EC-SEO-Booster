@@ -21,7 +21,10 @@ export const PromptModal: React.FC<PromptModalProps> = ({ prompt, onClose, title
   // Close modal on escape key
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
+      // 確保事件物件存在且有效
+      if (event && event.key === 'Escape') {
+        event.preventDefault();
+        event.stopPropagation();
         onClose();
       }
     };
