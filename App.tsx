@@ -21,6 +21,7 @@ import { SparklesIcon, ArrowPathIcon } from './components/icons';
 import { generateGammaPrompt, generateAIStudioPrompt, generateAllPromptsMarkdown } from './utils/promptGenerators';
 import { downloadMarkdown } from './utils/markdownUtils';
 import { captureAndDownloadScreenshot } from './utils/screenshotUtils';
+import { handleApiError } from './utils/errorHandler';
 
 function App() {
     const { apiKey } = useApiKey();
@@ -58,7 +59,7 @@ function App() {
             const result = await analyzeMarket(productInfo, apiKey);
             setAnalysisResult(result);
         } catch (err) {
-            setError(err instanceof Error ? err.message : '發生未知錯誤');
+      setError(handleApiError(err));
             console.error(err);
         } finally {
             setIsLoading(false);
@@ -79,7 +80,7 @@ function App() {
             const result = await generateContentStrategy(analysisResult, apiKey);
             setContentStrategy(result);
         } catch (err) {
-            setStrategyError(err instanceof Error ? err.message : '發生未知錯誤');
+      setStrategyError(handleApiError(err));
             console.error(err);
         } finally {
             setIsGeneratingStrategy(false);
