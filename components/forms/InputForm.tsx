@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import type { ProductInfo } from '../../types';
 import { fileToBase64 } from '../../utils/fileUtils';
+import { productInfoSchema, type ProductInfoForm } from '../../schemas/productInfoSchema';
+import { validateImageFile, formatFileSize } from '../../utils/fileValidation';
 
 interface InputFormProps {
   onAnalyze: (info: ProductInfo) => void;
@@ -8,34 +12,47 @@ interface InputFormProps {
 }
 
 export const InputForm: React.FC<InputFormProps> = ({ onAnalyze, isLoading }) => {
-  const [productName, setProductName] = useState('');
-  const [productUrl, setProductUrl] = useState('');
-  const [productDescription, setProductDescription] = useState('');
-  const [targetMarket, setTargetMarket] = useState('');
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [fileName, setFileName] = useState('');
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [fileError, setFileError] = useState<string | null>(null);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!productName || !productDescription || !targetMarket) {
-      alert("請填寫所有必要的文字欄位。");
-      return;
-    }
-    let imagePayload: ProductInfo['image'];
-    if (imageFile) {
-      const base64 = await fileToBase64(imageFile);
-      imagePayload = { base64, mimeType: imageFile.type };
-    }
-    onAnalyze({ name: productName, url: productUrl, description: productDescription, market: targetMarket, image: imagePayload });
-  };
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setValue,
+    watch,
+  } = useForm<ProductInfoForm>({
+    resolver: zodResolver(productInfoSchema),
+    defaultValues: {
+      name: '',
+      description: '',
+      url: '',
+      market: '',
+    },
+  });
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const productUrl = watch('url');
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFileError(null);
+    
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
+      
+      // 驗證檔案
+      const validation = validateImageFile(file);
+      if (!validation.valid) {
+        setFileError(validation.error || '檔案驗證失敗');
+        e.target.value = ''; // 清除選擇
+        return;
+      }
+
       setImageFile(file);
       setFileName(file.name);
 
+      // 讀取預覽
       const reader = new FileReader();
       reader.onloadend = () => {
         setPreviewUrl(reader.result as string);
@@ -43,60 +60,109 @@ export const InputForm: React.FC<InputFormProps> = ({ onAnalyze, isLoading }) =>
       reader.readAsDataURL(file);
     }
   };
-  
+
+  const onSubmit = async (data: ProductInfoForm) => {
+    let imagePayload: ProductInfo['image'];
+    
+    if (imageFile) {
+      try {
+        const base64 = await fileToBase64(imageFile);
+        imagePayload = { base64, mimeType: imageFile.type as 'image/jpeg' | 'image/png' | 'image/webp' | 'image/gif' };
+      } catch (error) {
+        setFileError('圖片處理失敗，請稍後再試');
+        return;
+      }
+    }
+
+    onAnalyze({
+      name: data.name,
+      url: data.url || undefined,
+      description: data.description,
+      market: data.market,
+      image: imagePayload,
+    });
+  };
+
   return (
-    <form onSubmit={handleSubmit} className="w-full max-w-2xl mx-auto space-y-6 animate-fade-in">
+    <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-2xl mx-auto space-y-6 animate-fade-in">
       <div className="space-y-2">
-        <label htmlFor="productName" className="font-medium text-text-secondary">產品名稱</label>
+        <label htmlFor="productName" className="font-medium text-text-secondary">
+          產品名稱 <span className="text-red-400">*</span>
+        </label>
         <input 
           id="productName" 
           type="text" 
-          value={productName} 
-          onChange={e => setProductName(e.target.value)} 
+          {...register('name')}
           placeholder="例如：人體工學辦公椅" 
-          required 
-          className="w-full bg-slate-800 border border-slate-700 rounded-md p-3 focus:ring-2 focus:ring-brand-secondary focus:outline-none transition" 
+          className={`w-full bg-slate-800 border rounded-md p-3 focus:ring-2 focus:ring-brand-secondary focus:outline-none transition ${
+            errors.name ? 'border-red-500' : 'border-slate-700'
+          }`}
         />
+        {errors.name && (
+          <p className="text-sm text-red-400 mt-1">{errors.name.message}</p>
+        )}
       </div>
+
       <div className="space-y-2">
-        <label htmlFor="productUrl" className="font-medium text-text-secondary">產品連結網址 (選填)</label>
+        <label htmlFor="productUrl" className="font-medium text-text-secondary">
+          產品連結網址 (選填)
+        </label>
         <input 
           id="productUrl" 
           type="url" 
-          value={productUrl} 
-          onChange={e => setProductUrl(e.target.value)} 
+          {...register('url')}
           placeholder="https://example.com/product-page" 
-          className="w-full bg-slate-800 border border-slate-700 rounded-md p-3 focus:ring-2 focus:ring-brand-secondary focus:outline-none transition" 
+          className={`w-full bg-slate-800 border rounded-md p-3 focus:ring-2 focus:ring-brand-secondary focus:outline-none transition ${
+            errors.url ? 'border-red-500' : 'border-slate-700'
+          }`}
         />
+        {errors.url && (
+          <p className="text-sm text-red-400 mt-1">{errors.url.message}</p>
+        )}
       </div>
+
       <div className="space-y-2">
-        <label htmlFor="productDescription" className="font-medium text-text-secondary">產品描述與特色</label>
+        <label htmlFor="productDescription" className="font-medium text-text-secondary">
+          產品描述與特色 <span className="text-red-400">*</span>
+        </label>
         <textarea 
           id="productDescription" 
-          value={productDescription} 
-          onChange={e => setProductDescription(e.target.value)} 
+          {...register('description')}
           placeholder="在此貼上產品詳細資訊、規格與主要賣點..." 
-          required 
           rows={6} 
-          className="w-full bg-slate-800 border border-slate-700 rounded-md p-3 focus:ring-2 focus:ring-brand-secondary focus:outline-none transition resize-y" 
+          className={`w-full bg-slate-800 border rounded-md p-3 focus:ring-2 focus:ring-brand-secondary focus:outline-none transition resize-y ${
+            errors.description ? 'border-red-500' : 'border-slate-700'
+          }`}
         />
+        {errors.description && (
+          <p className="text-sm text-red-400 mt-1">{errors.description.message}</p>
+        )}
       </div>
+
       <div className="space-y-2">
-        <label htmlFor="targetMarket" className="font-medium text-text-secondary">目標市場</label>
+        <label htmlFor="targetMarket" className="font-medium text-text-secondary">
+          目標市場 <span className="text-red-400">*</span>
+        </label>
         <input 
           id="targetMarket" 
           type="text" 
-          value={targetMarket} 
-          onChange={e => setTargetMarket(e.target.value)} 
+          {...register('market')}
           placeholder="例如：台灣、美國加州或日本東京" 
-          required 
-          className="w-full bg-slate-800 border border-slate-700 rounded-md p-3 focus:ring-2 focus:ring-brand-secondary focus:outline-none transition" 
+          className={`w-full bg-slate-800 border rounded-md p-3 focus:ring-2 focus:ring-brand-secondary focus:outline-none transition ${
+            errors.market ? 'border-red-500' : 'border-slate-700'
+          }`}
         />
+        {errors.market && (
+          <p className="text-sm text-red-400 mt-1">{errors.market.message}</p>
+        )}
       </div>
+
       <div className="space-y-2">
         <span className="font-medium text-text-secondary">產品圖片 (選填)</span>
         <label htmlFor="productImage" className="mt-1 group block cursor-pointer">
-          <div className={`flex justify-center items-center w-full min-h-[12rem] px-6 py-4 border-2 ${previewUrl ? 'border-slate-700' : 'border-dashed border-slate-600'} rounded-lg bg-slate-800/50 hover:border-brand-secondary transition-colors`}>
+          <div className={`flex justify-center items-center w-full min-h-[12rem] px-6 py-4 border-2 rounded-lg bg-slate-800/50 hover:border-brand-secondary transition-colors ${
+            fileError ? 'border-red-500' : previewUrl ? 'border-slate-700' : 'border-dashed border-slate-600'
+          }`}>
             {previewUrl ? (
               <div className="text-center relative">
                 <img src={previewUrl} alt="產品預覽" className="max-h-56 w-auto rounded-md shadow-lg" />
@@ -115,14 +181,28 @@ export const InputForm: React.FC<InputFormProps> = ({ onAnalyze, isLoading }) =>
                     <span className="pl-1">或拖曳圖片至此</span>
                   </p>
                 </div>
-                <p className="text-xs leading-5 text-slate-500">PNG, JPG, GIF 等格式</p>
+                <p className="text-xs leading-5 text-slate-500">PNG, JPG, GIF, WebP 格式，最大 10MB</p>
               </div>
             )}
           </div>
         </label>
-        {fileName && <p className="text-sm text-slate-400 mt-2 text-center">已選取檔案：{fileName}</p>}
-        <input id="productImage" type="file" onChange={handleFileChange} accept="image/*" className="hidden" />
+        {fileError && (
+          <p className="text-sm text-red-400 mt-2 text-center">{fileError}</p>
+        )}
+        {fileName && !fileError && (
+          <p className="text-sm text-slate-400 mt-2 text-center">
+            已選取檔案：{fileName} ({imageFile ? formatFileSize(imageFile.size) : ''})
+          </p>
+        )}
+        <input 
+          id="productImage" 
+          type="file" 
+          onChange={handleFileChange} 
+          accept="image/jpeg,image/png,image/webp,image/gif" 
+          className="hidden" 
+        />
       </div>
+
       <button 
         type="submit" 
         disabled={isLoading} 
@@ -134,4 +214,3 @@ export const InputForm: React.FC<InputFormProps> = ({ onAnalyze, isLoading }) =>
     </form>
   );
 };
-
