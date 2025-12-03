@@ -36,6 +36,17 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Verify build output
+        run: |
+          echo "Checking build output..."
+          ls -la dist/
+          echo "---"
+          ls -la dist/assets/
+          echo "---"
+          cat dist/index.html | grep -E "script|module"
+          echo "---"
+          test -f dist/.nojekyll && echo ".nojekyll exists" || echo ".nojekyll missing"
+
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
