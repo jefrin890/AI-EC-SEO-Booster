@@ -43,9 +43,22 @@ jobs:
           echo "---"
           ls -la dist/assets/
           echo "---"
+          echo "Checking index.html content:"
           cat dist/index.html | grep -E "script|module"
           echo "---"
+          echo "Checking .nojekyll:"
           test -f dist/.nojekyll && echo ".nojekyll exists" || echo ".nojekyll missing"
+          if [ -f dist/.nojekyll ]; then
+            echo ".nojekyll file size: $(wc -c < dist/.nojekyll) bytes"
+            echo ".nojekyll content: '$(cat dist/.nojekyll)'"
+          fi
+          echo "---"
+          echo "Verifying JS file exists:"
+          JS_FILE=$(grep -oP 'src="\./assets/[^"]+\.js"' dist/index.html | sed 's/src="\.\/assets\///;s/"//')
+          if [ -n "$JS_FILE" ]; then
+            echo "JS file from HTML: $JS_FILE"
+            test -f "dist/assets/$JS_FILE" && echo "JS file exists" || echo "JS file MISSING!"
+          fi
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
