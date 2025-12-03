@@ -1,8 +1,7 @@
-import React, { useState, useCallback, useRef } from 'react';
-import { analyzeMarket, generateContentStrategy } from './services/geminiService';
+import React, { useState, useCallback } from 'react';
 import { useApiKey } from './contexts/ApiKeyContext';
 import { ApiKeyModal } from './components/ApiKeyModal';
-import type { AnalysisResult, ProductInfo, ContentStrategy, ContentTopic } from './types';
+import type { ContentTopic } from './types';
 
 // Components
 import { Header } from './components/common/Header';
@@ -17,75 +16,58 @@ import { InfoModal } from './components/modals/InfoModal';
 import { FeatureIntroductionContent } from './components/modals/FeatureIntroductionContent';
 import { SparklesIcon, ArrowPathIcon } from './components/icons';
 
+// Hooks
+import { useProductAnalysis } from './hooks/useProductAnalysis';
+import { useContentStrategy } from './hooks/useContentStrategy';
+import { useScreenshot } from './hooks/useScreenshot';
+
 // Utils
 import { generateGammaPrompt, generateAIStudioPrompt, generateAllPromptsMarkdown } from './utils/promptGenerators';
 import { downloadMarkdown } from './utils/markdownUtils';
-import { captureAndDownloadScreenshot } from './utils/screenshotUtils';
-import { handleApiError } from './utils/errorHandler';
 
 function App() {
-    const { apiKey } = useApiKey();
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
-    const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null);
-    const [productInfo, setProductInfo] = useState<ProductInfo | null>(null);
-    const [formKey, setFormKey] = useState(0);
+  const { apiKey } = useApiKey();
+  const [formKey, setFormKey] = useState(0);
+  
+  const [promptModalContent, setPromptModalContent] = useState<string | null>(null);
+  const [promptModalTitle, setPromptModalTitle] = useState('');
+  
+  const [isIntroModalOpen, setIsIntroModalOpen] = useState(false);
+  const [isApiKeyModalOpen, setIsApiKeyModalOpen] = useState(false);
 
-    const [isGeneratingStrategy, setIsGeneratingStrategy] = useState(false);
-    const [strategyError, setStrategyError] = useState<string | null>(null);
-    const [contentStrategy, setContentStrategy] = useState<ContentStrategy | null>(null);
-    
-    const [promptModalContent, setPromptModalContent] = useState<string | null>(null);
-    const [promptModalTitle, setPromptModalTitle] = useState('');
-    
-    const [isIntroModalOpen, setIsIntroModalOpen] = useState(false);
-    const [isApiKeyModalOpen, setIsApiKeyModalOpen] = useState(false);
+  // 使用自訂 Hooks 管理業務邏輯
+  const {
+    analyze,
+    isLoading,
+    error,
+    analysisResult,
+    productInfo,
+    reset: resetAnalysis,
+  } = useProductAnalysis(apiKey);
 
-  // Screenshot refs
-  const screenshotRef1 = useRef<HTMLDivElement>(null);
-  const screenshotRef2 = useRef<HTMLDivElement>(null);
-  const screenshotRef3 = useRef<HTMLDivElement>(null);
+  const {
+    generate: generateStrategy,
+    isGenerating: isGeneratingStrategy,
+    error: strategyError,
+    contentStrategy,
+    reset: resetStrategy,
+  } = useContentStrategy(apiKey);
 
-    const handleAnalyze = useCallback(async (productInfo: ProductInfo) => {
-        if (!apiKey) {
-            setError('請先設定 Gemini API Key');
-            return;
-        }
-        setProductInfo(productInfo);
-        setIsLoading(true);
-        setError(null);
-        setAnalysisResult(null);
-        try {
-            const result = await analyzeMarket(productInfo, apiKey);
-            setAnalysisResult(result);
-        } catch (err) {
-      setError(handleApiError(err));
-            console.error(err);
-        } finally {
-            setIsLoading(false);
-        }
-    }, [apiKey]);
-    
-    const handleGenerateStrategy = useCallback(async () => {
-        if (!analysisResult || !apiKey) {
-            if (!apiKey) {
-                setStrategyError('請先設定 Gemini API Key');
-            }
-            return;
-        }
-        setIsGeneratingStrategy(true);
-        setStrategyError(null);
-        setContentStrategy(null);
-        try {
-            const result = await generateContentStrategy(analysisResult, apiKey);
-            setContentStrategy(result);
-        } catch (err) {
-      setStrategyError(handleApiError(err));
-            console.error(err);
-        } finally {
-            setIsGeneratingStrategy(false);
-        }
-    }, [analysisResult, apiKey]);
+  const {
+    screenshotRef1,
+    screenshotRef2,
+    screenshotRef3,
+    downloadAllScreenshots,
+  } = useScreenshot();
+
+  const handleAnalyze = useCallback(async (info: Parameters<typeof analyze>[0]) => {
+    await analyze(info);
+  }, [analyze]);
+
+  const handleGenerateStrategy = useCallback(async () => {
+    if (!analysisResult) return;
+    await generateStrategy(analysisResult);
+  }, [analysisResult, generateStrategy]);
 
     const handleGenerateGammaPrompt = useCallback((topic: ContentTopic) => {
         if (!productInfo || !analysisResult || !contentStrategy) return;
@@ -107,40 +89,16 @@ function App() {
     downloadMarkdown(markdownContent, `完整提示詞集合-${productInfo.name.replace(/\s+/g, '_')}.txt`);
   }, [productInfo, analysisResult, contentStrategy]);
 
-    const handleDownloadAllScreenshots = useCallback(async () => {
-        if (!productInfo) return;
-        const productName = productInfo.name.replace(/\s+/g, '_');
-        
-    try {
-        if (screenshotRef1.current) {
-        await captureAndDownloadScreenshot(screenshotRef1.current, `${productName}-1_產品核心價值與目標市場定位.png`);
-        await new Promise(resolve => setTimeout(resolve, 500));
-        }
-        
-        if (screenshotRef2.current) {
-        await captureAndDownloadScreenshot(screenshotRef2.current, `${productName}-2_競爭對手分析與潛在客戶描繪.png`);
-            await new Promise(resolve => setTimeout(resolve, 500));
-        }
-        
-        if (screenshotRef3.current) {
-        await captureAndDownloadScreenshot(screenshotRef3.current, `${productName}-3_內容與互動策略.png`);
-      }
-    } catch (error) {
-      alert('截圖失敗，請稍後再試');
-        }
-  }, [productInfo]);
+  const handleDownloadAllScreenshots = useCallback(async () => {
+    await downloadAllScreenshots(productInfo);
+  }, [productInfo, downloadAllScreenshots]);
 
-    const handleStartOver = () => {
-        setIsLoading(false);
-        setError(null);
-        setAnalysisResult(null);
-        setProductInfo(null);
-        setIsGeneratingStrategy(false);
-        setStrategyError(null);
-        setContentStrategy(null);
-        setPromptModalContent(null);
-        setFormKey(prevKey => prevKey + 1);
-    };
+  const handleStartOver = () => {
+    resetAnalysis();
+    resetStrategy();
+    setPromptModalContent(null);
+    setFormKey(prevKey => prevKey + 1);
+  };
     
     const renderContent = () => {
     if (isLoading) {

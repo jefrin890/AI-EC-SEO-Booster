@@ -326,11 +326,18 @@ export const validateImageFile = (file: File): FileValidationResult => {
 
 ### 4. 業務邏輯抽象 ⚠️ 中優先級
 
-#### 4.1 缺少自訂 Hooks
+#### 4.1 缺少自訂 Hooks ✅ 已解決
 **問題描述：**
-- 業務邏輯直接寫在元件中
-- 狀態管理邏輯重複
-- 難以重用和測試
+- ~~業務邏輯直接寫在元件中~~ ✅ 已抽象到 Hooks
+- ~~狀態管理邏輯重複~~ ✅ 已統一管理
+- ~~難以重用和測試~~ ✅ 已可重用和測試
+
+**解決方案：**
+- ✅ 建立 `useProductAnalysis` Hook 管理市場分析相關狀態和邏輯
+- ✅ 建立 `useContentStrategy` Hook 管理內容策略生成相關狀態和邏輯
+- ✅ 建立 `useScreenshot` Hook 管理截圖功能
+- ✅ 在 App.tsx 中使用這些 Hooks，大幅簡化元件邏輯
+- ✅ 業務邏輯現在可以在其他元件中重用
 
 **目前實作：**
 ```typescript
@@ -731,9 +738,18 @@ describe('analyzeMarket', () => {
      - ✅ 建置測試通過，無錯誤
 
 ### 🟡 中優先級（短期優化）
-4. **實作自訂 Hooks** - 抽象業務邏輯
+4. ✅ **實作自訂 Hooks** - 抽象業務邏輯
    - 影響：程式碼重用、測試能力
    - 預估時間：1-2 天
+   - **狀態：已完成** (2024-12-03)
+   - **完成內容：**
+     - ✅ 建立 `hooks/useProductAnalysis.ts` - 產品市場分析 Hook
+     - ✅ 建立 `hooks/useContentStrategy.ts` - 內容策略生成 Hook
+     - ✅ 建立 `hooks/useScreenshot.ts` - 截圖功能 Hook
+     - ✅ 在 App.tsx 中整合自訂 Hooks，進一步精簡程式碼
+     - ✅ App.tsx 從 258 行精簡到 218 行（減少 15%）
+     - ✅ 業務邏輯已抽象到可重用的 Hooks
+     - ✅ 建置測試通過，無錯誤
 
 5. **新增表單驗證** - 使用 react-hook-form + zod
    - 影響：使用者體驗、資料完整性
